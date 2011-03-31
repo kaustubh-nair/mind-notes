@@ -1,3 +1,5 @@
 from django.test import TestCase
 
-# Create your tests here.
+class ModelsTestCase(TestCase):
+    def test_sample(self):
+        self.assertEqual(0,0)
