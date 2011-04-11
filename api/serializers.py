@@ -1,8 +1,13 @@
 from rest_framework import serializers
 
-from .models import Note
+from . import models
 
-class NoteSerializer(serializers.HyperlinkedModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Note
-        fields = "__all__"
+        model = models.Book
+        fields = '__all__'
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = '__all__'

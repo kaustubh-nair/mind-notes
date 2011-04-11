@@ -1,13 +1,11 @@
 from django.urls import include, path
-from rest_framework import routers
 from . import views
-
-router = routers.DefaultRouter()
-router.register(r'notes', views.NoteViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+        path('books/', views.BookApiView.as_view()),
+        path('books/public', views.PublicBookApiView.as_view()),
+        path('books/private', views.PrivateBookApiView.as_view()),
+        path('books/<str:user_name>', views.UserBookApiView.as_view()),
 ]
