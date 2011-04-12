@@ -51,13 +51,6 @@ POST,PATCH,DELETE /books/note/
 ```
 
 
-### Connect two notes
-
-```
-PATCH /notes/connect/
-```
-
-
 ### View a note
 
 ```
