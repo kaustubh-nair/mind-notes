@@ -26,39 +26,35 @@ const canvasStyle = {
 const Book = () => {
     const [, setState] = useState({});
     const forceRerender = () => setState({});
-    const [notes, setBook] = useState([]);
+    const [notes, setNotes] = useState([]);
+    const [lines, setLines] = useState([]);
+
+    const fetchLines = async () => {
+        const url = variables.serverUrl + variables.fetchLinesEndpoint;
+        const response = await axios.get(url, {crossDomain: false, params: {book_id: '1'}});
+        console.debug("DEBUG");
+        var l = Object.values(response.data)
+        for (var i = 0; i < l.length; i++) {
+            l[i].start = String(l[i].start);
+            l[i].end = String(l[i].end);
+        }
+        setLines(l);
+    }
 
     const fetchBook = async () => {
         const url = variables.serverUrl + variables.fetchNotesEndpoint;
         const response = await axios.get(url, {crossDomain: false, params: {book_id: '1'}});
-        setBook(Object.values(response.data));
+        setNotes(Object.values(response.data));
     }
 
     useEffect(() => {
 	  fetchBook();
+	  fetchLines();
 	}, []);
-
-
-  const [lines] = useState([
-    {
-      start: "1",
-      end: "2",
-    },
-    {
-      start: "2",
-      end: "1",
-      color: "red",
-    },
-    {
-      start: "note3",
-      end: "boom",
-      color: "green",
-    },
-  ]);
 
   return (
     <React.Fragment>
-      {console.debug(notes)}
+      {console.debug(lines)}
       {console.debug("BO")}
       <div style={canvasStyle} id="canvas">
         <div style={noteContainerStyle} id="noteContainerConatinerStyle">
