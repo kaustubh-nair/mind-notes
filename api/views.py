@@ -34,29 +34,25 @@ class BookNoteApiView(APIView):
                     book=book,
                     parent=parent,
                 )
-        note.save():
+        note.save()
         return Response({}, status=status.HTTP_200_OK)
 
     def patch(self, request, *args, **kwargs):
         book_id = request.data.get('book_id')
         book = Book.objects.get(id=book_id)
-        note = Note.objects.get(request.data.get('note_id'))
+        note = Note.objects.get(id=request.data.get('note_id'))
 
-        data = {}
         if (request.data.get('name')):
-            data.update({'name': request.data.get('name')})
-        elif (request.data.get('content')):
-            data.update({'content': request.data.get('content')})
-        elif (request.data.get('name')):
-            data.update({'coordinates': request.data.get('coordinates')})
+            note.name = request.data.get('name')
+        if (request.data.get('content')):
+            note.content = request.data.get('content')
+        if (request.data.get('x')):
+            note.x = request.data.get('x')
+        if (request.data.get('y')):
+            note.y = request.data.get('y')
 
-        if note.update(data):
-            return Response({}, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {'message': 'Invalid request parameters'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        note.save()
+        return Response({}, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
         note_id = request.data.get('note_id')
