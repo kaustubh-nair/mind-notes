@@ -16,3 +16,11 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Note
         fields = '__all__'
+
+
+class LineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Line
+        fields = '__all__'
+
+

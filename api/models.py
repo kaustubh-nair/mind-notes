@@ -42,7 +42,8 @@ class Book(models.Model):
 class Note(models.Model):
     name = models.CharField(max_length=100)
     content = models.TextField(default='', max_length=100000)
-    coordinates = models.CharField(default='', max_length=10000)
+    x = models.IntegerField(default=0)
+    y = models.IntegerField(default=0)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, blank=True, null=True)
     parent = models.ForeignKey("Note", on_delete=models.SET_NULL, blank=True, null=True)
 
@@ -64,3 +65,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Line(models.Model):
+    start = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='+')
+    end = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='+')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    color = models.CharField(max_length=100)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
