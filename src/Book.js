@@ -42,7 +42,7 @@ const Book = () => {
     const [dragging, setDragging] = useState(false);
 
     const openNote = (e) => {
-        alert("ASD");
+        prompt('Please enter your name','Poppy');
     }
 
     const onStop = (e, ui) => {
