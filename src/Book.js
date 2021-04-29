@@ -31,8 +31,9 @@ const boxStyle = {
 };
 
 const FewArrows = () => {
-  const [, setState] = useState({});
-  const forceRerender = () => setState({});
+    const [, setState] = useState({});
+    const [dragging, setDragging] = useState(false);
+    const forceRerender = () => setState({});
 
   const boxes = [
     { id: "box1", x: 50, y: 20, ref: useRef(null) },
@@ -77,16 +78,29 @@ const FewArrows = () => {
 
     const openNote = (e) => {
         alert("ASD");
+        forceRerender();
     }
 
+    const onStop = () => {
+        const d = dragging;
+        setDragging(false);
+        if (!d) {
+            openNote();
+        }
+        forceRerender();
+    }
+    const onDrag = () => {
+        setDragging(true);
+        forceRerender();
+    }
 
   return (
     <React.Fragment>
       <div style={canvasStyle} id="canvas">
         <div style={boxContainerStyle} id="boxContainerConatinerStyle">
-          <div onClick={openNote} style={boxContainerStyle} id="boxContainerStyle">
+          <div style={boxContainerStyle} id="boxContainerStyle">
             {boxes.map((box, i) => (
-              <Draggable onStop={forceRerender} onDrag={forceRerender} key={i}>
+              <Draggable onStop={onStop} onDrag={onDrag} key={i}>
                 <div
                   id={box.id}
                   style={{ ...boxStyle, left: box.x, top: box.y }}
