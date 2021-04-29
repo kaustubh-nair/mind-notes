@@ -51,7 +51,7 @@ const Note = (props) => {
                   id={note.id}
                   style={{ ...noteStyle, left: note.x, top: note.y }}
                 >
-                  {note.id}
+                  {note.title}
                 </div>
               </Draggable>
             ))}

@@ -1,7 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Xarrow from "react-xarrows";
+import axios from 'axios';
 import Draggable from "react-draggable";
 import Note from "./Note.js";
+import {variables} from "./urls.js";
 
 const noteContainerStyle = {
   position: "relative",
@@ -24,50 +26,40 @@ const canvasStyle = {
 const Book = () => {
     const [, setState] = useState({});
     const forceRerender = () => setState({});
+    const [notes, setBook] = useState([]);
 
-  const notes = [
-    { id: "note1", x: 50, y: 20, ref: useRef(null) },
-    { id: "note2", x: 20, y: 250, ref: useRef(null) },
-    { id: "note3", x: 350, y: 80, ref: useRef(null) },
-  ];
+    const fetchBook = async () => {
+        const url = variables.serverUrl + variables.fetchNotesEndpoint;
+        const response = await axios.get(url, {crossDomain: false, params: {book_id: '1'}});
+        setBook(Object.values(response.data));
+    }
+
+    useEffect(() => {
+	  fetchBook();
+	}, []);
+
 
   const [lines] = useState([
     {
-      start: "note1",
-      end: "note2",
-      headSize: 14,
-      label: { end: "endLabel" },
+      start: "1",
+      end: "2",
     },
     {
-      start: "note2",
-      end: "note3",
+      start: "2",
+      end: "1",
       color: "red",
-      label: {
-        middle: (
-          <div
-            contentEditable
-            suppressContentEditableWarning={true}
-            style={{ font: "italic 1.5em serif", color: "purple" }}
-          >
-            Editable label
-          </div>
-        ),
-      },
-      headSize: 0,
-      strokeWidth: 15,
     },
     {
       start: "note3",
-      end: "note1",
+      end: "boom",
       color: "green",
-      path: "grid",
-      // endAnchor: ["right", {position: "left", offset: {bottomness: -10}}],
-      dashness: { animation: 1 },
     },
   ]);
 
   return (
     <React.Fragment>
+      {console.debug(notes)}
+      {console.debug("BO")}
       <div style={canvasStyle} id="canvas">
         <div style={noteContainerStyle} id="noteContainerConatinerStyle">
           <Note notes={notes} lines={lines}/>
