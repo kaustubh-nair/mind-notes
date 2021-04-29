@@ -17,8 +17,8 @@ const noteStyle = {
 const noteContainerStyle = {
   position: "relative",
   //overflow: "auto",
-  width: "120%",
-  height: "120%",
+  width: "100%",
+  height: "100%",
   background: "white",
   color: "black",
   border: "black solid 1px",
@@ -34,6 +34,7 @@ const canvasStyle = {
 
 const Book = () => {
     const [, setState] = useState({});
+    const [lastPoint, setLastPoint] = useState({ x: 0, y: 0 });
     const forceRerender = () => setState({});
 
     const [notes, setNotes] = useState([]);
@@ -44,15 +45,30 @@ const Book = () => {
         alert("ASD");
     }
 
-    const onStop = () => {
-        const d = dragging;
+    const onStop = (e, ui) => {
         setDragging(false);
-        if (!d) {
+
+        const d = dragging;
+        const noteId = ui.node.id;
+        const i = notes.findIndex((note) => note.id == noteId);
+        const newX = notes[i].x + e.clientX - lastPoint.x,
+            newY = notes[i].y + e.clientY - lastPoint.y;
+        console.debug(newX, newY);
+        console.debug(notes[i].x, notes[i].y);
+        if (d) {
+            updatePosition(newX, newY, noteId);
+        }
+        else {
             openNote();
         }
-        forceRerender();
+        //forceRerender();
     }
-    const onDrag = () => {
+
+    const onStart = (e) => {
+        setLastPoint({ x: e.clientX, y: e.clientY })
+    }
+
+    const onDrag = (e) => {
         setDragging(true);
         forceRerender();
     }
@@ -74,11 +90,6 @@ const Book = () => {
         setNotes(Object.values(response.data));
     }
 
-    useEffect(() => {
-	  fetchBook();
-	  fetchLines();
-	}, []);
-
     const addNote = () => {
         const url = variables.serverUrl + variables.postNoteEndpoint;
         const res = axios.post(url, {
@@ -89,9 +100,23 @@ const Book = () => {
             y: 50,
             parent_id: 1,
         });
-        fetchBook()
-
+        fetchBook();
     }
+
+    const updatePosition = (x, y, noteId) => {
+        const url = variables.serverUrl + variables.patchNoteEndpoint;
+        const res = axios.patch(url, {
+            book_id: 1,
+            note_id: noteId,
+            x: x,
+            y: y,
+        });
+    }
+
+    useEffect(() => {
+	  fetchBook();
+	  fetchLines();
+	}, []);
 
   return (
     <React.Fragment>
@@ -100,7 +125,7 @@ const Book = () => {
         <div style={noteContainerStyle} id="noteContainerConatinerStyle">
           <div style={noteContainerStyle} id="noteContainerStyle">
             {notes.map((note, i) => (
-              <Draggable onStop={onStop} onDrag={onDrag} key={i}>
+              <Draggable onStart={onStart} onStop={onStop} onDrag={onDrag} key={i}>
                 <div
                   id={note.id}
                   style={{ ...noteStyle, left: note.x, top: note.y }}
