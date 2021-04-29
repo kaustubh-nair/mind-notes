@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import BookSerializer, UserSerializer
-from .models import Book, User
+from .serializers import BookSerializer, UserSerializer, NoteSerializer
+from .models import Book, User, Note
 
 class BookApiView(APIView):
     def get(self, request, *args, **kwargs):
@@ -15,6 +15,13 @@ class BookApiView(APIView):
 
 
 class BookNoteApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        book_id = int(dict(request.GET)['book_id'][0])
+        book = Book.objects.get(id=book_id)
+        notes = Note.objects.filter(book=book)
+        serializer = NoteSerializer(notes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         book_id = request.data.get('book_id')
         book = Book.objects.get(id=book_id)
