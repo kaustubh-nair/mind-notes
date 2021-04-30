@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {variables} from "./urls.js";
+import {variables} from "../urls.js";
 
 async function loginUser(credentials) {
  return fetch(variables.serverUrl + variables.loginEndpoint, {
@@ -13,7 +13,8 @@ async function loginUser(credentials) {
 }
 
 
-export default function Login({ setToken }) {
+
+export default function Log({setToken}) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
@@ -26,9 +27,7 @@ export default function Login({ setToken }) {
         if ('access' in response)
             setToken(response['access']);
   }
-
-    return(
-        <div class="loginform">
+        return (
             <form onSubmit={handleSubmit}>
 
                 <h3>Log in</h3>
@@ -43,12 +42,10 @@ export default function Login({ setToken }) {
                     <input onChange={e => setPassword(e.target.value)} type="password" className="form-control" placeholder="Enter password" />
                 </div>
 
-
                 <button type="submit" className="btn btn-dark btn-lg btn-block">Sign in</button>
                 <p className="forgot-password text-right">
                     Forgot <a href="#">password?</a>
                 </p>
             </form>
-        </div>
-    );
+        );
 }
