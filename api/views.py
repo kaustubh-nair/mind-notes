@@ -1,12 +1,20 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import status, generics
 
-from .serializers import BookSerializer, UserSerializer, NoteSerializer, LineSerializer
+from .serializers import BookSerializer, UserSerializer, NoteSerializer, LineSerializer, RegisterSerializer
 from .models import Book, User, Note, Line
 
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny, )
+    serializer_class = RegisterSerializer
+
+
 class BookApiView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         user_id = int(dict(request.GET)['user_id'][0])
         books = Book.objects.filter(user_id=user_id)

@@ -1,9 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 import datetime
 
 
-class User(models.Model):
-    name = models.CharField(max_length=100)
+class User(AbstractUser):
     subscribed_tags = models.ManyToManyField("Tag")
     favourite_books = models.ManyToManyField("Book", related_name='+')
 
