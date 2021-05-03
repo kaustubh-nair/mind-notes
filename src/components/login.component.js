@@ -14,7 +14,7 @@ async function loginUser(credentials) {
 
 
 
-export default function Log({setToken}) {
+export default function Login({setToken}) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
@@ -28,6 +28,7 @@ export default function Log({setToken}) {
             setToken(response['access']);
   }
         return (
+            <div className="inner">
             <form onSubmit={handleSubmit}>
 
                 <h3>Log in</h3>
@@ -47,5 +48,6 @@ export default function Log({setToken}) {
                     Forgot <a href="#">password?</a>
                 </p>
             </form>
+            </div>
         );
 }
