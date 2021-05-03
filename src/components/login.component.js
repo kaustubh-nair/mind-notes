@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect} from "react-router-dom";
 import {variables} from "../urls.js";
 
 async function loginUser(credentials) {
@@ -25,8 +26,11 @@ export default function Login({setToken}) {
           password
         });
         if ('access' in response)
-            setToken(response['access']);
-  }
+        {
+            setToken({'access': response['access'], 'refresh': response['refresh']});
+            window.location.reload(false);
+        }
+      }
         return (
             <div className="inner">
             <form onSubmit={handleSubmit}>

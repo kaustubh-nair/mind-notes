@@ -5,6 +5,7 @@ const variables = {
     patchNoteEndpoint: "api/books/notes",
     fetchLinesEndpoint: "api/books/notes/lines",
     loginEndpoint: "api/login/",
+    logoutEndpoint: "api/logout/",
 }
 
 export {variables};

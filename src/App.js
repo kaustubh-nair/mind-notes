@@ -4,6 +4,7 @@ import './App.css';
 import { Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Login from "./components/login.component";
+import Logout from "./components/logout.component";
 import Navbar from "./components/navbar.component";
 import Book from "./components/Book.js";
 import PublicApp from "./PublicApp.js";
@@ -21,6 +22,7 @@ function getToken() {
 
 export default function App() {
 
+   //setToken(null);
     if(!getToken()) {
         return <PublicApp setToken={setToken}/>
     }
@@ -31,7 +33,10 @@ export default function App() {
                   <div className="outer">
                       <Switch>
                             <Route exact path='/' >
-                              <Book/>
+                    <h3> hello world</h3>
+                            </Route>
+                            <Route path='/logout' >
+                                  <Logout getToken={getToken} setToken={setToken}/>
                             </Route>
                       </Switch>
                   </div>

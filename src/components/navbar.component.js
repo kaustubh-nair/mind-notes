@@ -15,7 +15,7 @@ export default function Navbar({setToken}) {
                 </ul>
                 <ul className="navbar-nav ml-auto">
                   <li className="nav-item">
-                    <Link className="nav-link" to={"/logou"}>Logout</Link>
+                    <Link className="nav-link" to={"/logout"}>Logout</Link>
                   </li>
                 </ul>
               </div>
