@@ -7,6 +7,7 @@ import Login from "./components/login.component";
 import Logout from "./components/logout.component";
 import Navbar from "./components/navbar.component";
 import Book from "./components/Book.js";
+import AllBooks from "./components/allbooks.component";
 import PublicApp from "./PublicApp.js";
 import SignUp from "./components/signup.component";
 
@@ -33,7 +34,7 @@ export default function App() {
                   <div className="outer">
                       <Switch>
                             <Route exact path='/' >
-                    <h3> hello world</h3>
+                              <AllBooks getToken={getToken}/>
                             </Route>
                             <Route path='/logout' >
                                   <Logout getToken={getToken} setToken={setToken}/>

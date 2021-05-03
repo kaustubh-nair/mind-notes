@@ -10,7 +10,7 @@ import SignUp from "./components/signup.component";
 
 export default function PublicApp({setToken}) {
   return (<Router>
-        <div className="App">
+        <div class="App">
           <PublicNavbar/>
           <div className="outer">
               <Switch>

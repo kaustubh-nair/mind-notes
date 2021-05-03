@@ -12,6 +12,9 @@ export default function Navbar({setToken}) {
                   <li className="nav-item">
                     <Link className="nav-link" to={"/feed"}>Feed</Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/"}>My Books</Link>
+                  </li>
                 </ul>
                 <ul className="navbar-nav ml-auto">
                   <li className="nav-item">
