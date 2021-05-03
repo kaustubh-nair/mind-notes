@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Book from './Book.js';
+import { BrowserRouter, } from 'react-router-dom';
+import App from './App.js';
 import reportWebVitals from './reportWebVitals';
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Book />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>, 
+    document.getElementById('root')
+)
+
 
 reportWebVitals(console.log);
