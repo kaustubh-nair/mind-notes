@@ -9,10 +9,19 @@ import Book from "./components/Book.js";
 import PublicApp from "./PublicApp.js";
 import SignUp from "./components/signup.component";
 
-export default function App() {
-    const [token, setToken] = useState();
+function setToken(userToken) {
+  sessionStorage.setItem('token', JSON.stringify(userToken));
+}
 
-    if(!token) {
+function getToken() {
+  const tokenString = sessionStorage.getItem('token');
+  const userToken = JSON.parse(tokenString);
+  return userToken
+}
+
+export default function App() {
+
+    if(!getToken()) {
         return <PublicApp setToken={setToken}/>
     }
 
