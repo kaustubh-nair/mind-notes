@@ -6,7 +6,14 @@ User = get_user_model()
 
 from . import models
 
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tag
+        fields = '__all__'
+
 class BookSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(read_only=True, many=True)
     class Meta:
         model = models.Book
         fields = '__all__'

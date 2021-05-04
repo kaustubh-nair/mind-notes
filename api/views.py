@@ -3,9 +3,24 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status, generics
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import BookSerializer, UserSerializer, NoteSerializer, LineSerializer, RegisterSerializer
 from .models import Book, User, Note, Line
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -14,7 +29,16 @@ class RegisterView(generics.CreateAPIView):
 
 
 class BookApiView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        book_id = int(dict(request.GET)['book_id'][0])
+        books = Book.objects.filter(id=book_id).first()
+        serializer = BookSerializer(books)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class BooksApiView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         user_id = int(dict(request.GET)['user_id'][0])
         books = Book.objects.filter(user_id=user_id)
@@ -23,6 +47,7 @@ class BookApiView(APIView):
 
 
 class BookNoteApiView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         book_id = int(dict(request.GET)['book_id'][0])
         book = Book.objects.get(id=book_id)
@@ -75,6 +100,7 @@ class BookNoteApiView(APIView):
 
 
 class PublicBookApiView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         user_id = int(dict(request.GET)['user_id'][0])
         books = Book.objects.filter(user_id=user_id, is_public=True)
@@ -88,6 +114,7 @@ class PublicBookApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class NoteApiView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         note_id = request.data.get('note_id')
         note = Note.objects.get(id=note_id)
@@ -97,6 +124,7 @@ class NoteApiView(APIView):
 
 
 class PrivateBookApiView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         user_id = int(dict(request.GET)['user_id'][0])
         books = Book.objects.filter(user_id=user_id, is_public=False)
@@ -105,6 +133,7 @@ class PrivateBookApiView(APIView):
 
 
 class UserBookApiView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, user_name, *args, **kwargs):
         user = User.objects.get(name=user_name)
         serializer = UserSerializer(user)
@@ -112,6 +141,7 @@ class UserBookApiView(APIView):
 
 
 class LinesApiView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         book_id = int(dict(request.GET)['book_id'][0])
         book = Book.objects.get(id=book_id)

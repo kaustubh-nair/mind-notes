@@ -11,7 +11,7 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.first_name
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
@@ -30,7 +30,7 @@ class Book(models.Model):
     is_public = models.BooleanField(default=False)
     votes = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
