@@ -43,10 +43,6 @@ function AllBooks({getToken, setBookId}) {
     return t;
   }
 
-  function isPublic(is_public) {
-    if (is_public) 
-      return "checked";
-  }
 
   function setRenderedBooks() {
     console.debug(books);
@@ -70,12 +66,6 @@ function AllBooks({getToken, setBookId}) {
               
             </div>
             <div className="column-right">
-              <div className="book-card-public">
-                  <label className="switch">
-                    <input type="checkbox" checked={isPublic(books[i].is_public)}></input>
-                    <span className="slider round"></span>
-                  </label>
-              </div>
               <div className="book-card-tags">
                   {getTagCards(books[i].tags)}
               </div>

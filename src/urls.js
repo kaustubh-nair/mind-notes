@@ -5,6 +5,7 @@ const variables = {
     patchNoteEndpoint: "api/books/notes",
     fetchLinesEndpoint: "api/books/notes/lines",
     fetchBooksEndpoint: "api/books/",
+    fetchBookEndpoint: "api/book/",
     loginEndpoint: "api/login/",
     logoutEndpoint: "api/logout/",
 }

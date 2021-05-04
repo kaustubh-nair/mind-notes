@@ -11,34 +11,14 @@ function useForceUpdate(){
   return () => setState(!value);
 }
 
-let renderedBooks = "";
 const noteStyle = {
-  position: "absolute",
+  position: "relative",
   border: "1px #999 solid",
   borderRadius: "10px",
   textAlign: "center",
   width: "100px",
   height: "30px",
-};
-
-
-const noteContainerStyle = {
-  position: "relative",
-  //overflow: "auto",
-  width: "100%",
-  height: "100%",
-  background: "white",
-  color: "black",
-  border: "black solid 1px",
-};
-const canvasStyle = {
-  width: "100%",
-  height: "100%",
-  background: "white",
-  border: "none",
-  //overflow: "auto",
-  display: "flex",
-};
+}
 
 const Book = ({getToken}) => {
   const [lastPoint, setLastPoint] = useState({ x: 0, y: 0 });
@@ -46,11 +26,17 @@ const Book = ({getToken}) => {
   const forceUpdate = useForceUpdate();
 
   const [notes, setNotes] = useState([]);
+  const [book, setBook] = useState([]);
   const [lines, setLines] = useState([]);
   const [dragging, setDragging] = useState(false);
 
   const openNote = (e) => {
       prompt('Please enter your name','Poppy');
+  }
+
+  function isPublic(is_public) {
+    if (is_public) 
+      return "checked";
   }
 
   const onStop = (e, ui) => {
@@ -61,8 +47,6 @@ const Book = ({getToken}) => {
         const i = notes.findIndex((note) => note.id == noteId);
         const newX = notes[i].x + e.clientX - lastPoint.x,
             newY = notes[i].y + e.clientY - lastPoint.y;
-        console.debug(newX, newY);
-        console.debug(notes[i].x, notes[i].y);
         if (d) {
             updatePosition(newX, newY, noteId);
         }
@@ -94,12 +78,18 @@ const Book = ({getToken}) => {
     }
 
     const fetchBook = async () => {
-      console.log(bookId);
+        const url = variables.serverUrl + variables.fetchBookEndpoint;
+        const token = getToken();
+        const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
+        setBook(response.data);
+        console.log(response.data);
+    }
+
+    const fetchNotes = async () => {
         const url = variables.serverUrl + variables.fetchNotesEndpoint;
         const token = getToken();
         const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         setNotes(Object.values(response.data));
-        console.log(Object.values(response.data));
     }
 
     const addNote = () => {
@@ -113,48 +103,76 @@ const Book = ({getToken}) => {
             y: 50,
             parent_id: 1,
         }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
-        fetchBook();
+        fetchNotes();
     }
 
     const updatePosition = (x, y, noteId) => {
         const url = variables.serverUrl + variables.patchNoteEndpoint;
+        const token = getToken();
         const res = axios.patch(url, {
             book_id: bookId,
             note_id: noteId,
             x: x,
             y: y,
-        });
+        }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
     }
 
+  function openEditDescription() {
+
+  }
+
+
     useEffect(() => {
+      fetchNotes();
       fetchBook();
       fetchLines();
 	}, []);
 
   return (
-    <React.Fragment>
-      <button onClick={addNote}> Add note</button>
-      <div style={canvasStyle} id="canvas" >
-        <div style={noteContainerStyle} id="noteContainerConatinerStyle">
-          <div style={noteContainerStyle} id="noteContainerStyle">
-            {notes.map((note, i) => (
-              <Draggable onStart={onStart} onStop={onStop} onDrag={onDrag} key={i}>
-                <div
-                  id={note.id}
-                  style={{ ...noteStyle, left: note.x, top: note.y }}
-                >
-                  {note.title}
+    <div className="canvas-wrapper">
+      <React.Fragment>
+        <h3 className="note-heading">Book</h3>
+        <div className="note-canvas">
+          <div className="row">
+            <div className="column">
+              <div className="canvasStyle" id="canvas" >
+                <div className="noteContainerStyle" id="noteContainerConatinerStyle">
+                  <div className="noteContainerStyle" id="noteContainerStyle">
+                    {notes.map((note, i) => (
+                      <Draggable onStart={onStart} onStop={onStop} onDrag={onDrag} key={i}>
+                        <div
+                          id={note.id}
+                          style={{ ...noteStyle, left: note.x, top: note.y }}
+                        >
+                          {note.title}
+                        </div>
+                      </Draggable>
+                    ))}
+                    {lines.map((line, i) => (
+                      <Xarrow key={i} {...line} />
+                    ))}
+                  </div>
                 </div>
-              </Draggable>
-            ))}
-            {lines.map((line, i) => (
-              <Xarrow key={i} {...line} />
-            ))}
+              </div>
+            </div>
+          <div className="column-right">
+                <p>{book.description}</p>
+                <button onClick={openEditDescription} className="btn btn-primary">Edit description</button>
+                <button onClick={addNote} className="btn btn-primary"> Add note</button>
+                <div className="side-panel-public">
+                    <h3>Public</h3>
+                    <label className="switch">
+                      <input type="checkbox" checked={isPublic(book.is_public)}></input>
+                      <span className="slider round"></span>
+                    </label>
+                </div>
+          </div>
           </div>
         </div>
-      </div>
-      <br />
-    </React.Fragment>
+        <br />
+      </React.Fragment>
+    
+    </div>
   );
 };
 

@@ -4,7 +4,7 @@ import {variables} from "../urls.js";
 
 export default function Navbar({setToken}) {
     return (
-          <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+          <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div className="container">
               <Link className="navbar-brand" to={"/"}>Mind Note</Link>
               <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
