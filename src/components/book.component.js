@@ -1,9 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useLocation, Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { useParams } from "react-router";
 import Xarrow from "react-xarrows";
 import axios from 'axios';
 import Draggable from "react-draggable";
 import {variables} from "../urls.js";
 
+function useForceUpdate(){
+  let [value, setState] = useState(true);
+  return () => setState(!value);
+}
+
+let renderedBooks = "";
 const noteStyle = {
   position: "absolute",
   border: "1px #999 solid",
@@ -32,20 +40,20 @@ const canvasStyle = {
   display: "flex",
 };
 
-const Book = () => {
-    const [, setState] = useState({});
-    const [lastPoint, setLastPoint] = useState({ x: 0, y: 0 });
-    const forceRerender = () => setState({});
+const Book = ({getToken, query}) => {
+  const bookId = query.get('id');
+  const [lastPoint, setLastPoint] = useState({ x: 0, y: 0 });
+  const forceUpdate = useForceUpdate();
 
-    const [notes, setNotes] = useState([]);
-    const [lines, setLines] = useState([]);
-    const [dragging, setDragging] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [lines, setLines] = useState([]);
+  const [dragging, setDragging] = useState(false);
 
-    const openNote = (e) => {
-        prompt('Please enter your name','Poppy');
-    }
+  const openNote = (e) => {
+      prompt('Please enter your name','Poppy');
+  }
 
-    const onStop = (e, ui) => {
+  const onStop = (e, ui) => {
         setDragging(false);
 
         const d = dragging;
@@ -61,7 +69,7 @@ const Book = () => {
         else {
             openNote();
         }
-        //forceRerender();
+        //forceUpdate();
     }
 
     const onStart = (e) => {
@@ -70,12 +78,13 @@ const Book = () => {
 
     const onDrag = (e) => {
         setDragging(true);
-        forceRerender();
+        forceUpdate();
     }
 
     const fetchLines = async () => {
         const url = variables.serverUrl + variables.fetchLinesEndpoint;
-        const response = await axios.get(url, {crossDomain: false, params: {book_id: '1'}});
+        const token = getToken();
+        const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         var l = Object.values(response.data)
         for (var i = 0; i < l.length; i++) {
             l[i].start = String(l[i].start);
@@ -85,28 +94,32 @@ const Book = () => {
     }
 
     const fetchBook = async () => {
+      console.log(bookId);
         const url = variables.serverUrl + variables.fetchNotesEndpoint;
-        const response = await axios.get(url, {crossDomain: false, params: {book_id: '1'}});
+        const token = getToken();
+        const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         setNotes(Object.values(response.data));
+        console.log(Object.values(response.data));
     }
 
     const addNote = () => {
         const url = variables.serverUrl + variables.postNoteEndpoint;
+        const token = getToken();
         const res = axios.post(url, {
-            book_id: 1,
+            book_id: bookId,
             name: 'lksdjf',
             content: '',
             x: 50,
             y: 50,
             parent_id: 1,
-        });
+        }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         fetchBook();
     }
 
     const updatePosition = (x, y, noteId) => {
         const url = variables.serverUrl + variables.patchNoteEndpoint;
         const res = axios.patch(url, {
-            book_id: 1,
+            book_id: bookId,
             note_id: noteId,
             x: x,
             y: y,
@@ -114,8 +127,8 @@ const Book = () => {
     }
 
     useEffect(() => {
-	  fetchBook();
-	  fetchLines();
+      fetchBook();
+      fetchLines();
 	}, []);
 
   return (

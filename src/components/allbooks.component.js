@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect} from "react-router-dom";
+import { Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import axios from 'axios';
 import {variables} from "../urls.js";
 
@@ -9,7 +9,7 @@ function useForceUpdate(){
 }
 let renderedBooks = "";
 
-function AllBooks({getToken}) {
+function AllBooks({getToken, setBookId}) {
   const [books, setBooks] = useState(null);
   const forceUpdate = useForceUpdate();
 
@@ -48,10 +48,6 @@ function AllBooks({getToken}) {
       return "checked";
   }
 
-  function openCard() {
-    console.log("ADS");
-  }
-
   function setRenderedBooks() {
     console.debug(books);
     if (books) {
@@ -60,13 +56,13 @@ function AllBooks({getToken}) {
         renderedBooks.push(
           <div className="book-card row">
             <div className="column">
-                <div className="title">
-                  <a href={openCard}>
-                      <h4>
+                <div>
+                    <Link className="title" to={"/book/" + books[i].id + "/notes"} >
+                      <h4 id={books[i].id}>
                           {books[i].title}
                   
                       </h4>
-                  </a>
+                    </Link> 
                 </div>
                 <div className="description">
                   {books[i].description}
@@ -98,10 +94,14 @@ function AllBooks({getToken}) {
 
   return (
     <>
-      <h3 className="header">My Books</h3>
-      <div className="books">
-      {renderedBooks}
-      </div>
+      <Router>
+      
+        <h3 className="header">My Books</h3>
+          <div className="books">
+            {renderedBooks}
+          </div>
+      
+      </Router>
     </>
   );
 }

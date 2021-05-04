@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { useLocation, Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Login from "./components/login.component";
 import Logout from "./components/logout.component";
+import Book from "./components/book.component.js";
 import Navbar from "./components/navbar.component";
-import Book from "./components/Book.js";
 import AllBooks from "./components/allbooks.component";
 import PublicApp from "./PublicApp.js";
 import SignUp from "./components/signup.component";
 
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function setToken(userToken) {
   sessionStorage.setItem('token', JSON.stringify(userToken));
 }
+
 
 function getToken() {
   const tokenString = sessionStorage.getItem('token');
@@ -21,27 +27,40 @@ function getToken() {
   return userToken
 }
 
+function useForceUpdate(){
+  let [value, setState] = useState(true);
+  return () => setState(!value);
+}
+
+let renderedBooks = "";
 export default function App() {
+  let query = useQuery();
+  const [mainPage, setMainPage] = useState(null);
+  const [bookId, setBookId] = useState(null);
+  let forceUpdate = useForceUpdate();
 
    //setToken(null);
-    if(!getToken()) {
-        return <PublicApp setToken={setToken}/>
-    }
+  if(!getToken()) {
+      return <PublicApp setToken={setToken}/>
+  }
 
-      return (<Router>
-                <div className="App">
-                  <Navbar/>
-                  <div className="outer">
-                      <Switch>
-                            <Route exact path='/' >
-                              <AllBooks getToken={getToken}/>
-                            </Route>
-                            <Route path='/logout' >
-                                  <Logout getToken={getToken} setToken={setToken}/>
-                            </Route>
-                      </Switch>
-                  </div>
-            </div>
-          </Router>
-      );
+    return (<Router>
+              <div className="App">
+                <Navbar/>
+                <div className="outer">
+                    <Switch>
+                          <Route exact path='/' >
+                            <AllBooks getToken={getToken} setBookId={setBookId}/>
+                          </Route>
+                          <Route path='/logout' >
+                            <Logout getToken={getToken} setToken={setToken}/>
+                          </Route>
+                          <Route exact path='/book/:id/notes'>
+                            <Book getToken={getToken} query={query} />
+                          </Route>
+                    </Switch>
+                </div>
+          </div>
+        </Router>
+    );
 }

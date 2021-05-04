@@ -143,6 +143,9 @@ input:checked + .slider:before {
   padding-left: 30%;
 }
 
+.book-card .title {
+  color: var(--gray);
+}
 .book-card .description {
   color: var(--gray);
 }

@@ -5,7 +5,6 @@ import { Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-ro
 
 import Login from "./components/login.component";
 import PublicNavbar from "./components/publicnavbar.component";
-import Book from "./components/Book.js";
 import SignUp from "./components/signup.component";
 
 export default function PublicApp({setToken}) {
@@ -14,12 +13,12 @@ export default function PublicApp({setToken}) {
           <PublicNavbar/>
           <div className="outer">
               <Switch>
-                    <Route exact path="/" >
-						  <Login setToken={setToken}/>
-                    </Route>
-                    <Route path="/sign-up" >
-						  <SignUp/>
-                    </Route>
+                <Route exact path="/" >
+                  <Login setToken={setToken}/>
+                </Route>
+                <Route path="/sign-up" >
+                    <SignUp/>
+                </Route>
               </Switch>
           </div>
         </div></Router>
