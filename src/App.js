@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { useLocation, Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Login from "./components/login.component";
 import Logout from "./components/logout.component";
@@ -11,10 +11,6 @@ import AllBooks from "./components/allbooks.component";
 import PublicApp from "./PublicApp.js";
 import SignUp from "./components/signup.component";
 
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
 function setToken(userToken) {
   sessionStorage.setItem('token', JSON.stringify(userToken));
@@ -34,7 +30,6 @@ function useForceUpdate(){
 
 let renderedBooks = "";
 export default function App() {
-  let query = useQuery();
   const [mainPage, setMainPage] = useState(null);
   const [bookId, setBookId] = useState(null);
   let forceUpdate = useForceUpdate();
@@ -56,7 +51,7 @@ export default function App() {
                             <Logout getToken={getToken} setToken={setToken}/>
                           </Route>
                           <Route exact path='/book/:id/notes'>
-                            <Book getToken={getToken} query={query} />
+                            <Book getToken={getToken}/>
                           </Route>
                     </Switch>
                 </div>

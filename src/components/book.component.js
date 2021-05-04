@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { useParams } from "react-router";
 import Xarrow from "react-xarrows";
 import axios from 'axios';
 import Draggable from "react-draggable";
+import { useParams } from "react-router";
 import {variables} from "../urls.js";
 
 function useForceUpdate(){
@@ -40,9 +40,9 @@ const canvasStyle = {
   display: "flex",
 };
 
-const Book = ({getToken, query}) => {
-  const bookId = query.get('id');
+const Book = ({getToken}) => {
   const [lastPoint, setLastPoint] = useState({ x: 0, y: 0 });
+  const bookId = useParams().id;
   const forceUpdate = useForceUpdate();
 
   const [notes, setNotes] = useState([]);
