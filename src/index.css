@@ -253,6 +253,7 @@ input:checked + .slider:before {
 
 .feed .row {
   display: flex;
+  margin-left: 1%;
 }
 
 .feed .column {
@@ -268,13 +269,13 @@ input:checked + .slider:before {
   padding: 10px 16px;
   margin: 1%;
   border-radius: 2vh;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.25);
+  box-shadow: 4px 1px 8px 0 rgba(0,0,0,0.25);
   transition: 0.3s;
 }
 
 /* On mouse-over, add a deeper shadow */
 .feed-card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.25);
+  box-shadow: 6px 2px 16px 0 rgba(0,0,0,0.25);
 }
 
 .feed-card .pill {
@@ -311,4 +312,16 @@ input:checked + .slider:before {
   color: var(--gray);
   margin-left: auto;
   margin-right: 0;
+}
+
+.comment{
+  width: 50%;
+  padding: 10px 16px;
+  margin: 1%;
+  border-radius: 2vh;
+  box-shadow: 4px 1px 8px 0 rgba(0,0,0,0.25);
+  transition: 0.3s;
+}
+.comment:hover {
+  box-shadow: 6px 2px 16px 0 rgba(0,0,0,0.25);
 }

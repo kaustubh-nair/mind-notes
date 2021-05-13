@@ -82,18 +82,16 @@ function Feed({getToken, setBookId}) {
             </div>
           </div>
         );
-        renderedFeed.push(<div className="column comments">
-              <div className="comment">
+        renderedFeed.push(<div className="comments">
                 {feed[i].comments.map( 
                   comment => (
-                    [
-                      <div>{comment.user.first_name}</div>,
-                      <div>{comment.time_ago}</div>,
-                      <div>{comment.content}</div>,
-                    ]
+                  <div className="comment">
+                      <div>{comment.user.first_name}</div>
+                      <div>{comment.time_ago}</div>
+                      <div>{comment.content}</div>
+                  </div>
                   )
                 )}
-              </div>
           </div>);
       }
       console.log(renderedFeed);
