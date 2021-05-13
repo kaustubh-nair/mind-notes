@@ -7,20 +7,28 @@ User = get_user_model()
 from . import models
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = ('username', 'first_name')
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Tag
         fields = '__all__'
 
-class BookSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(read_only=True, many=True)
+class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
-        model = models.Book
+        model = models.Comment
         fields = '__all__'
 
-class UserSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(read_only=True, many=True)
+    comments = CommentSerializer(read_only=True, many=True)
+    user = UserSerializer(read_only=True)
     class Meta:
-        model = models.User
+        model = models.Book
         fields = '__all__'
 
 class NoteSerializer(serializers.ModelSerializer):

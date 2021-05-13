@@ -99,6 +99,14 @@ class BookNoteApiView(APIView):
             )
 
 
+class FeedApiView(APIView):
+    permission_classes= (IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        # user_id = int(dict(request.GET)['user_id'][0])
+        books = Book.objects.filter(is_public=True)
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class PublicBookApiView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
