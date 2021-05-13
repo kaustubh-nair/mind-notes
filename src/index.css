@@ -239,3 +239,54 @@ input:checked + .slider:before {
   display: "flex";
 }
 
+
+.feed {
+  padding-left: 30%;
+}
+
+.feed-card .title {
+  color: var(--gray);
+}
+.feed-card .description {
+  color: var(--gray);
+}
+
+.feed .row {
+  display: flex;
+}
+
+.feed .column {
+  flex: 80%;
+}
+.feed .column-right {
+  flex: 20%;
+}
+
+.feed-card {
+  /* Add shadows to create the "card" effect */
+  width: 50%;
+  padding: 10px 16px;
+  margin: 1%;
+  border-radius: 2vh;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.25);
+  transition: 0.3s;
+}
+
+/* On mouse-over, add a deeper shadow */
+.feed-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.25);
+}
+
+.feed-card .pill {
+  background-color: #ffffff;
+  border: solid;
+  border-color: #91ceff;
+  color: #2196f3;
+  padding: 4px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 16px;
+}

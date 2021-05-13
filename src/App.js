@@ -4,6 +4,7 @@ import './App.css';
 import { Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Login from "./components/login.component";
+import Feed from "./components/feed.component";
 import Logout from "./components/logout.component";
 import Book from "./components/book.component.js";
 import Navbar from "./components/navbar.component";
@@ -46,6 +47,9 @@ export default function App() {
                     <Switch>
                           <Route exact path='/' >
                             <AllBooks getToken={getToken} setBookId={setBookId}/>
+                          </Route>
+                          <Route path='/feed' >
+                            <Feed getToken={getToken} setToken={setToken}/>
                           </Route>
                           <Route path='/logout' >
                             <Logout getToken={getToken} setToken={setToken}/>
