@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Redirect, Link} from "react-router-dom";
 import {variables} from "../urls.js";
-import {timeAgo} from "../helpers.js";
 
 function useForceUpdate(){
   let [value, setState] = useState(true);
@@ -53,6 +52,10 @@ function Feed({getToken, setBookId}) {
         console.log(feed[i]);
         renderedFeed.push(
           <div className="feed-card row">
+            <div className="header">
+              {feed[i].user.first_name}
+              {feed[i].time_ago}
+            </div>
             <div className="column">
                 <div>
                     <Link className="title" to={"/feed/" + feed[i].id + "/notes"} >
@@ -78,8 +81,9 @@ function Feed({getToken, setBookId}) {
                 {feed[i].comments.map( 
                   comment => (
                     [
+                      <div>{comment.user.first_name}</div>,
+                      <div>{comment.time_ago}</div>,
                       <div>{comment.content}</div>,
-                      <div>{timeAgo(comment.updated_at)}</div>
                     ]
                   )
                 )}
