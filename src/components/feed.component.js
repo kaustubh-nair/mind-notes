@@ -51,7 +51,8 @@ function Feed({getToken, setBookId}) {
       for(var i = 0; i < feed.length; i++) {
         console.log(feed[i]);
         renderedFeed.push(
-          <div className="feed-card row">
+          <div className="feed-card ">
+          <div className="book row">
             <div className="header">
              <img className="profile-picture" src={require('../static/pf.png')} alt="profile picture"/> 
               <div className="username">
@@ -80,19 +81,24 @@ function Feed({getToken, setBookId}) {
                   {getTagCards(feed[i].tags)}
               </div>
             </div>
+          
           </div>
-        );
-        renderedFeed.push(<div className="comments">
+        <div className="comments">
                 {feed[i].comments.map( 
                   comment => (
-                  <div className="comment">
-                      <div>{comment.user.first_name}</div>
-                      <div>{comment.time_ago}</div>
-                      <div>{comment.content}</div>
-                  </div>
+                    <div className="comment">
+                    <div className="header">
+                         <img className="profile-picture" src={require('../static/pf.png')} alt="profile picture"/> 
+                        <div className="username">{comment.user.first_name}</div>
+                        <div className="timestamp">{comment.time_ago}</div>
+                    </div>
+                      <div className="">{comment.content}</div>
+                    </div>
                   )
                 )}
-          </div>);
+          </div>
+          </div>
+        );
       }
       console.log(renderedFeed);
       console.log(typeof(renderedFeed));
