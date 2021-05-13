@@ -53,8 +53,13 @@ function Feed({getToken, setBookId}) {
         renderedFeed.push(
           <div className="feed-card row">
             <div className="header">
-              {feed[i].user.first_name}
-              {feed[i].time_ago}
+             <img className="profile-picture" src={require('../static/pf.png')} alt="profile picture"/> 
+              <div className="username">
+                {feed[i].user.first_name}
+              </div>
+              <div className="timestamp">
+                {feed[i].time_ago}
+              </div>
             </div>
             <div className="column">
                 <div>
@@ -75,8 +80,9 @@ function Feed({getToken, setBookId}) {
                   {getTagCards(feed[i].tags)}
               </div>
             </div>
-
-          <div className="column comments">
+          </div>
+        );
+        renderedFeed.push(<div className="column comments">
               <div className="comment">
                 {feed[i].comments.map( 
                   comment => (
@@ -88,8 +94,6 @@ function Feed({getToken, setBookId}) {
                   )
                 )}
               </div>
-          </div>
-
           </div>);
       }
       console.log(renderedFeed);
