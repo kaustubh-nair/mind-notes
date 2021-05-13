@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from time import time
+from datetime import datetime, date, timezone
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
@@ -27,9 +29,32 @@ class BookSerializer(serializers.ModelSerializer):
     tags = TagSerializer(read_only=True, many=True)
     comments = CommentSerializer(read_only=True, many=True)
     user = UserSerializer(read_only=True)
+    time_ago = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Book
-        fields = '__all__'
+        fields = ('title', 'description', 'is_public', 'votes', 'time_ago', 'comments', 'user', 'tags')
+
+    def get_time_ago(self, obj):
+        t = datetime.now(timezone.utc) - obj.updated_at
+        days = int(t.days)
+        hours = int(t.seconds//3600)
+        minutes = int((t.seconds//60)%60)
+
+        time_ago = ''
+        if days > 0:
+            time_ago += str(days) + ' days '
+        elif hours > 0:
+            time_ago += str(hours) + ' hours '
+        elif minutes > 0:
+            time_ago += str(minutes) + ' minutes '
+
+        time_ago += 'ago'
+
+        return time_ago
+
+    def transform_time_ago(self, obj, value):
+        return 0
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
