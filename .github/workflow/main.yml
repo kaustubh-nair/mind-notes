@@ -10,13 +10,3 @@ jobs:
         run: docker-compose up -d
       - name: Run migrations
         run: docker-compose exec -T web python manage.py migrate
-  test-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build the stack
-        run: docker-compose up -d
-      - name: Run migrations
-        run: docker-compose exec -T web python manage.py migrate
-      - name: Run tests
-        run: docker-compose exec -T web python manage.py test
