@@ -95,21 +95,7 @@ POST /books/comment/
 ```
 
 
-### Subscribe/unsub to a new tag
-
-```
-POST, DELETE /tags/
-```
-
-
-### Add note to favourite
-
-```
-POST /favourites/
-```
-
-
-### View my favourite tags
+### View my favourite books
 
 ```
 GET /favourites/

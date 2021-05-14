@@ -21,9 +21,29 @@ class TagSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    time_ago = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Comment
         fields = '__all__'
+
+    def get_time_ago(self, obj):
+        t = datetime.now(timezone.utc) - obj.updated_at
+        days = int(t.days)
+        hours = int(t.seconds//3600)
+        minutes = int((t.seconds//60)%60)
+
+        time_ago = ''
+        if days > 0:
+            time_ago += str(days) + ' days '
+        elif hours > 0:
+            time_ago += str(hours) + ' hours '
+        elif minutes > 0:
+            time_ago += str(minutes) + ' minutes '
+
+        time_ago += 'ago'
+
+        return time_ago
 
 class BookSerializer(serializers.ModelSerializer):
     tags = TagSerializer(read_only=True, many=True)
@@ -33,7 +53,7 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Book
-        fields = ('title', 'description', 'is_public', 'votes', 'time_ago', 'comments', 'user', 'tags')
+        fields = '__all__'
 
     def get_time_ago(self, obj):
         t = datetime.now(timezone.utc) - obj.updated_at

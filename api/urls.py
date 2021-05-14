@@ -10,6 +10,7 @@ urlpatterns = [
         path('books/', views.BooksApiView.as_view()),
         path('book/', views.BookApiView.as_view()),
         path('books/notes', views.BookNoteApiView.as_view()),
+        path('books/comment', views.CommentApiView.as_view()),
         path('books/notes/lines', views.LinesApiView.as_view()),
         path('books/public', views.PublicBookApiView.as_view()),
         path('books/private', views.PrivateBookApiView.as_view()),
