@@ -1,6 +1,6 @@
 # Hierarchical note taking app
 
-![mind map](./images/mind.png "Mind map")
+![mind map](./images/mind.png "Mind map") 
 
 ## Features
 
