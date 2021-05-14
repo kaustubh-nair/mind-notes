@@ -6,7 +6,7 @@ from rest_framework import status, generics
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import BookSerializer, UserSerializer, NoteSerializer, LineSerializer, RegisterSerializer
-from .models import Book, User, Note, Line, Comment
+from .models import Book, User, Note, Line, Comment, Tag
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -36,6 +36,24 @@ class BookApiView(APIView):
         serializer = BookSerializer(books)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def post(self, request, *args, **kwargs):
+        title = request.data.get('title')
+        description = request.data.get('description')
+        is_public = request.data.get('is_public')
+        user_id = request.data.get('user_id')
+        tags = request.data.get('tags').split(',')
+
+        book = Book.objects.create(title=title, description=description,
+                                   is_public=is_public, user_id=user_id)
+        for tag in tags:
+            t = None
+            try:
+                t = Tag.objects.get(name=tag)
+            except Tag.DoesNotExist:
+                t = Tag.objects.create(name=tag)
+            book.tags.add(t)
+
+        return Response(status=status.HTTP_200_OK)
 
 class BooksApiView(APIView):
     permission_classes = (IsAuthenticated,)
