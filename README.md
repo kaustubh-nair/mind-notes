@@ -80,11 +80,10 @@ GET /feed/tag/
 ```
 
 
-### Upvote/Downvote book
+### Upvote book
 
 ```
 PATCH /books/upvote/
-PATCH /books/downvote/
 ```
 
 
