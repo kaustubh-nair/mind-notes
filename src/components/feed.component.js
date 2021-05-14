@@ -14,12 +14,28 @@ function Feed({getToken, setBookId}) {
   const [feed, setFeed] = useState(null);
   const forceUpdate = useForceUpdate();
 
+  const addNewComment = async (e, data) => {
+    e.preventDefault();
+    const commentContent = e.target[0].value;
+    const bookId = e.target.id
+
+    const url = variables.serverUrl + variables.postCommentEndpoint;
+    const token = getToken();
+    const res = axios.post(url, {
+        content: commentContent,
+        book_id: bookId,
+        user_id: 1,
+    }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false });
+
+    e.target.reset();
+    fetchFeed();
+  }
+
   const fetchFeed = async () => {
     const url = variables.serverUrl + variables.fetchFeedEndpoint;
     const token = getToken();
     const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {user_id: '1'}});
     setFeed(response.data);
-    console.log(response.data);
   }
 
 
@@ -44,8 +60,6 @@ function Feed({getToken, setBookId}) {
   }
 
   function renderFeed() {
-    console.log("ASD");
-    console.log(feed);
     if (feed) {
       renderedFeed = [];
       for(var i = 0; i < feed.length; i++) {
@@ -97,11 +111,14 @@ function Feed({getToken, setBookId}) {
                   )
                 )}
           </div>
+          <div className="new-comment">
+            <form onSubmit={addNewComment} id={feed[i].id}>
+              <input placeholder="Add new comment" />
+            </form>
+          </div>
           </div>
         );
       }
-      console.log(renderedFeed);
-      console.log(typeof(renderedFeed));
       forceUpdate();
     }
     else {

@@ -6,6 +6,7 @@ const variables = {
     fetchLinesEndpoint: "api/books/notes/lines",
     fetchFeedEndpoint: "api/feed",
     fetchBooksEndpoint: "api/books/",
+    postCommentEndpoint: "api/books/comment",
     fetchBookEndpoint: "api/book/",
     loginEndpoint: "api/login/",
     logoutEndpoint: "api/logout/",
