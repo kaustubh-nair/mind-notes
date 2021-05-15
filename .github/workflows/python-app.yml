@@ -5,35 +5,58 @@ name: Continuous Integration
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Build container
-      run: |
-        docker-compose up --build -d
-    - name: Run migrations
-      run: |
-        docker-compose exec web python manage.py migrate
+      - uses: actions/checkout@v2
+      - name: Build container
+        run: |
+          docker-compose up --build -d
+      - name: Run migrations
+        run: |
+          docker-compose exec web python manage.py migrate
 
   test:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Build container
-      run: |
-        docker-compose up --build -d
-    - name: Run migrations
-      run: |
-        docker-compose exec web python manage.py migrate
-    - name: Run tests
-      run: |
-        docker-compose exec web python manage.py test
+      - uses: actions/checkout@v2
+      - name: Build container
+        run: |
+          docker-compose up --build -d
+      - name: Run migrations
+        run: |
+          docker-compose exec web python manage.py migrate
+      - name: Run tests
+        run: |
+          docker-compose exec web python manage.py test
+
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build container
+        run: |
+          docker-compose build
+      - name: Push to docker hub
+        run: |
+          docker-compose push
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbook.yml
+          directory: ./
+          key: ${{secrets.ANSIBLE_SSH_PASSWORD}}
+          inventory: |
+              [hosts]
+              server1 ansible_host=104.41.156.91
+
+              [all:vars]
+              ansible_user=kaustubh
+          vault_password: ${{secrets.ANSIBLE_SSH_PASSWORD}}
