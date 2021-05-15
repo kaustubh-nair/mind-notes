@@ -78,7 +78,7 @@ function Feed({getToken, setBookId}) {
             </div>
             <div className="column">
                 <div>
-                    <Link className="title" to={"/feed/" + feed[i].id + "/notes"} >
+                    <Link className="title" to={"/book/" + feed[i].id + "/notes"} >
                       <h4 id={feed[i].id}>
                           {feed[i].title}
                   
@@ -110,6 +110,9 @@ function Feed({getToken, setBookId}) {
                     </div>
                   )
                 )}
+          </div>
+          <div className="like">
+                <button onClick={likeBook} className="btn btn-dark">Like</button>
           </div>
           <div className="new-comment">
             <form onSubmit={addNewComment} id={feed[i].id}>
