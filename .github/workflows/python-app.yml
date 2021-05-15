@@ -20,7 +20,7 @@ jobs:
         docker-compose up --build -d
     - name: Run migrations
       run: |
-        docker-compose exec python manage.py migrate
+        docker-compose exec web python manage.py migrate
 
   test:
 
@@ -33,7 +33,7 @@ jobs:
         docker-compose up --build -d
     - name: Run migrations
       run: |
-        docker-compose exec python manage.py migrate
+        docker-compose exec web python manage.py migrate
     - name: Run tests
       run: |
-        docker-compose exec python manage.py test
+        docker-compose exec web python manage.py test
