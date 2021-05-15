@@ -27,21 +27,33 @@ const Book = ({getToken}) => {
 
   const [notes, setNotes] = useState([]);
   const [connectionMode, setConnectionMode] = useState(null); // 0 for selecting start, 1 for selecting end, null for opening note.
+  const [disConnectionMode, setDisconnectionMode] = useState(null); // 0 for selecting start, 1 for selecting end, null for opening note.
   const [book, setBook] = useState([]);
   const [lines, setLines] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [connectionStart, setConnectionStart] = useState(null);
+  const [disconnectionStart, setDisconnectionStart] = useState(null);
 
-  const createArrow = (startingNote, endingNote) => {
+  const createArrow = async (startingNote, endingNote) => {
         const url = variables.serverUrl + variables.postLinesEndpoint;
         const token = getToken();
-      // TODO: add wait
-        const res = axios.post(url, {
+        const res = await axios.post(url, {
             book_id: bookId,
             start_id: startingNote,
             end_id: endingNote,
         }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
         fetchLines();
+  }
+
+  const deleteArrow = async (startingNote, endingNote) => {
+        const url = variables.serverUrl + variables.deleteLinesEndpoint;
+        const token = getToken();
+        const res = await axios.patch(url, {
+            book_id: bookId,
+            start_id: startingNote,
+            end_id: endingNote,
+        }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
+      fetchLines();
   }
 
   const clickOnNote = (e, noteId) => {
@@ -55,6 +67,17 @@ const Book = ({getToken}) => {
       createArrow(connectionStart, noteId);
       setConnectionMode(null);
       setConnectionStart(null);
+    }
+    else if(disConnectionMode==0)
+    {
+      setDisconnectionStart(noteId);
+      setDisconnectionMode(1);
+    }
+    else if(disConnectionMode == 1)
+    {
+      deleteArrow(disconnectionStart, noteId)
+      setDisconnectionMode(null);
+      setDisconnectionStart(null);
     }
     else {
       prompt('Please enter your name','Poppy');
@@ -120,11 +143,10 @@ const Book = ({getToken}) => {
         setNotes(Object.values(response.data));
     }
 
-    const addNote = () => {
+    const addNote = async () => {
         const url = variables.serverUrl + variables.postNoteEndpoint;
         const token = getToken();
-      // TODO: add wait
-        const res = axios.post(url, {
+        const res = await axios.post(url, {
             book_id: bookId,
             name: 'lksdjf',
             content: '',
@@ -154,7 +176,7 @@ const Book = ({getToken}) => {
     setConnectionMode(0);
   }
   function disconnectNotes() {
-
+    setDisconnectionMode(0);
   }
 
 

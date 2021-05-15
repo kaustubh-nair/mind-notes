@@ -176,6 +176,15 @@ class LinesApiView(APIView):
         serializer = LineSerializer(lines, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def patch(self, request, *args, **kwargs):
+        start_id = request.data.get('start_id')
+        end_id = request.data.get('end_id')
+        book_id = request.data.get('book_id')
+        l = Line.objects.get(start_id=start_id, end_id=end_id, book_id=book_id)
+        print("YAY\n\n\n\n\n")
+        l.delete()
+        return Response({}, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         start_id = request.data.get('start_id')
         end_id = request.data.get('end_id')

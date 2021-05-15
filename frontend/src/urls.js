@@ -4,6 +4,7 @@ const variables = {
     postNoteEndpoint: "api/books/notes",
     postBookEndpoint: "api/book/",
     postLinesEndpoint: "api/books/notes/lines",
+    deleteLinesEndpoint: "api/books/notes/lines",
     patchNoteEndpoint: "api/books/notes",
     fetchLinesEndpoint: "api/books/notes/lines",
     fetchFeedEndpoint: "api/feed",
