@@ -26,12 +26,39 @@ const Book = ({getToken}) => {
   const forceUpdate = useForceUpdate();
 
   const [notes, setNotes] = useState([]);
+  const [connectionMode, setConnectionMode] = useState(null); // 0 for selecting start, 1 for selecting end, null for opening note.
   const [book, setBook] = useState([]);
   const [lines, setLines] = useState([]);
   const [dragging, setDragging] = useState(false);
+  const [connectionStart, setConnectionStart] = useState(null);
 
-  const openNote = (e) => {
+  const createArrow = (startingNote, endingNote) => {
+        const url = variables.serverUrl + variables.postLinesEndpoint;
+        const token = getToken();
+      // TODO: add wait
+        const res = axios.post(url, {
+            book_id: bookId,
+            start_id: startingNote,
+            end_id: endingNote,
+        }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
+        fetchLines();
+  }
+
+  const clickOnNote = (e, noteId) => {
+    if (connectionMode == 0)
+    {
+      setConnectionStart(noteId);
+      setConnectionMode(1);
+    }
+    else if(connectionMode == 1)
+    {
+      createArrow(connectionStart, noteId);
+      setConnectionMode(null);
+      setConnectionStart(null);
+    }
+    else {
       prompt('Please enter your name','Poppy');
+    }
   }
 
   function isPublic(is_public) {
@@ -51,7 +78,7 @@ const Book = ({getToken}) => {
             updatePosition(newX, newY, noteId);
         }
         else {
-            openNote();
+            clickOnNote(e, noteId);
         }
         //forceUpdate();
     }
@@ -74,6 +101,7 @@ const Book = ({getToken}) => {
             l[i].start = String(l[i].start);
             l[i].end = String(l[i].end);
         }
+      console.log(l);
         setLines(l);
     }
 
@@ -95,6 +123,7 @@ const Book = ({getToken}) => {
     const addNote = () => {
         const url = variables.serverUrl + variables.postNoteEndpoint;
         const token = getToken();
+      // TODO: add wait
         const res = axios.post(url, {
             book_id: bookId,
             name: 'lksdjf',
@@ -118,6 +147,13 @@ const Book = ({getToken}) => {
     }
 
   function openEditDescription() {
+
+  }
+
+  function connectNotes() {
+    setConnectionMode(0);
+  }
+  function disconnectNotes() {
 
   }
 
@@ -155,12 +191,15 @@ const Book = ({getToken}) => {
                 </div>
               </div>
             </div>
-          <div className="column-right">
+          <div className="sidebar column-right">
+                <button onClick={addNote} className="btn btn-dark"> Add note</button>
+                <button onClick={connectNotes} className="btn btn-dark">Connect two notes</button>
+                <button onClick={disconnectNotes} className="btn btn-dark">Disconnect two notes</button>
+                <h5 className="desc" >Description:</h5>
                 <p>{book.description}</p>
-                <button onClick={openEditDescription} className="btn btn-primary">Edit description</button>
-                <button onClick={addNote} className="btn btn-primary"> Add note</button>
+                <button onClick={openEditDescription} className="btn btn-dark">Edit description</button>
                 <div className="side-panel-public">
-                    <h3>Public</h3>
+                    <h5 className="desc" >Set public</h5>
                     <label className="switch">
                       <input type="checkbox" checked={isPublic(book.is_public)}></input>
                       <span className="slider round"></span>

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import random
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -168,12 +169,21 @@ class UserBookApiView(APIView):
 
 class LinesApiView(APIView):
     permission_classes = (IsAuthenticated,)
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         book_id = int(dict(request.GET)['book_id'][0])
         book = Book.objects.get(id=book_id)
         lines = Line.objects.filter(book=book)
         serializer = LineSerializer(lines, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        start_id = request.data.get('start_id')
+        end_id = request.data.get('end_id')
+        book_id = request.data.get('book_id')
+        colors = ['red', 'green', 'blue', 'pink', 'black', 'gray', 'grey', 'purple', 'orange', 'yellow', 'brown', 'cyan',]
+        color = random.choice(colors)
+        Line.objects.create(start_id=start_id, end_id=end_id, book_id=book_id, color=color)
+        return Response({}, status=status.HTTP_200_OK)
 
 class CommentApiView(APIView):
     permission_classes = (IsAuthenticated,)
