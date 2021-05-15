@@ -2,6 +2,10 @@
 - name: Deploy calculator
   hosts: hosts
   tasks:
+    - name: Stop containers
+      shell:
+        chdir: mind-notes
+        cmd: docker-compose -f docker-compose-prod.yml down
     - name: Pull docker images
       shell:
         chdir: mind-notes
