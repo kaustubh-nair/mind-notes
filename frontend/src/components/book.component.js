@@ -26,6 +26,7 @@ const Book = ({getToken}) => {
   const forceUpdate = useForceUpdate();
 
   const [notes, setNotes] = useState([]);
+  const [addNoteForm, setaddNoteForm] = useState("");
   const [connectionMode, setConnectionMode] = useState(null); // 0 for selecting start, 1 for selecting end, null for opening note.
   const [disConnectionMode, setDisconnectionMode] = useState(null); // 0 for selecting start, 1 for selecting end, null for opening note.
   const [book, setBook] = useState([]);
@@ -35,12 +36,28 @@ const Book = ({getToken}) => {
   const [disconnectionStart, setDisconnectionStart] = useState(null);
 
   const togglePublic = async (e) => {
-        const url = variables.serverUrl + variables.patchBookEndpoint;
-        const token = getToken();
-        const res = await axios.patch(url, {
-            book_id: bookId,
-            is_public: !book.is_public,
-        }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
+    const url = variables.serverUrl + variables.patchBookEndpoint;
+    const token = getToken();
+    const res = await axios.patch(url, {
+        book_id: bookId,
+        is_public: !book.is_public,
+    }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
+  }
+
+  const saveNote = (e) => {
+    closeForm();
+    const url = variables.serverUrl + variables.postNoteEndpoint;
+    const token = getToken();
+    let name = e.target[1].value;
+    let content = e.target[2].value;
+    let note_id = e.target[1].id;
+    const res = axios.patch(url, {
+      book_id: bookId,
+      note_id: note_id,
+      name: name,
+      content: content,
+      parent_id: 1,
+    }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
   }
 
   const createArrow = async (startingNote, endingNote) => {
@@ -89,7 +106,7 @@ const Book = ({getToken}) => {
       setDisconnectionStart(null);
     }
     else {
-      prompt('Please enter your name','Poppy');
+        addNotePopup(noteId)
     }
   }
 
@@ -133,7 +150,6 @@ const Book = ({getToken}) => {
             l[i].start = String(l[i].start);
             l[i].end = String(l[i].end);
         }
-      console.log(l);
         setLines(l);
     }
 
@@ -142,7 +158,6 @@ const Book = ({getToken}) => {
         const token = getToken();
         const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         setBook(response.data);
-        console.log(response.data);
     }
 
     const fetchNotes = async () => {
@@ -196,11 +211,47 @@ const Book = ({getToken}) => {
       fetchLines();
 	}, []);
 
+  function closeForm() {
+    setaddNoteForm("");
+    forceUpdate();
+  }
+
+  function addNotePopup(noteId) {
+    setaddNoteForm( [
+          <div className="formbk" id="contact_form">
+              <div className="panel-body">
+                  <form id={noteId} onSubmit={saveNote} className="form-horizontal" role="form">
+                      <button onClick={closeForm} className="btn btn-danger">X</button>
+                      <div className="form-group">
+                          <label for="title" className="">Title</label>
+                          <div className="">
+                              <input className="form-control" id={noteId} placeholder="Title"/>
+                          </div>
+                      </div>
+                      <div className="form-group">
+                          <label for="content" className="">Content</label>
+                          <div className="">
+                              <input className="form-control" id="content" placeholder="Content"/>
+                          </div>
+                      </div>
+
+                      <div className="form-group">
+                          <div className="">
+                              <button type="submit" className="btn btn-dark">Save</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+    ]);
+    forceUpdate();
+  }
   return (
     <div className="canvas-wrapper">
       <React.Fragment>
         <h3 className="note-heading">Book</h3>
         <div className="note-canvas">
+          {addNoteForm}
           <div className="row">
             <div className="column">
               <div className="canvasStyle" id="canvas" >
