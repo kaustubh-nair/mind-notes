@@ -1,0 +1,11 @@
+[hosts]
+104.41.156.91 ansible_user=kaustubh
+
+[defaults]
+remote_user=green
+ansible_connection=ssh
+ansible_user=green
+ansible_ssh_pass=green
+ansible_sudo_pass=green
+become_method=sudo
+become_ask_pass=false

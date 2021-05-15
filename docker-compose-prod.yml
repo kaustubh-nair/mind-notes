@@ -1,4 +1,4 @@
-version: "3.9"
+version: "2.2"
    
 services:
   db:
@@ -13,10 +13,8 @@ services:
     image: kaustubhnair/mindnotesbackend
     build:
       context: .
-      dockerfile: ./backend/Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend:/code
       - ./logs:/code/logs
     ports:
       - "8000:8000"
@@ -26,8 +24,5 @@ services:
     image: kaustubhnair/mindnotesfrontend
     build: ./frontend
     command: ["npm", "start"]
-    volumes:
-      - ./frontend:/app/frontend
-      - ./frontend/node_modules:/app/frontend/node_modules
     ports:
       - "3000:3000"
