@@ -34,6 +34,15 @@ const Book = ({getToken}) => {
   const [connectionStart, setConnectionStart] = useState(null);
   const [disconnectionStart, setDisconnectionStart] = useState(null);
 
+  const togglePublic = async (e) => {
+        const url = variables.serverUrl + variables.patchBookEndpoint;
+        const token = getToken();
+        const res = await axios.patch(url, {
+            book_id: bookId,
+            is_public: !book.is_public,
+        }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
+  }
+
   const createArrow = async (startingNote, endingNote) => {
         const url = variables.serverUrl + variables.postLinesEndpoint;
         const token = getToken();
@@ -175,6 +184,7 @@ const Book = ({getToken}) => {
   function connectNotes() {
     setConnectionMode(0);
   }
+
   function disconnectNotes() {
     setDisconnectionMode(0);
   }
@@ -223,9 +233,10 @@ const Book = ({getToken}) => {
                 <div className="side-panel-public">
                     <h5 className="desc" >Set public</h5>
                     <label className="switch">
-                      <input type="checkbox" checked={isPublic(book.is_public)}></input>
+                      <input onChange={togglePublic} type="checkbox" checked={isPublic(book.is_public)}></input>
                       <span className="slider round"></span>
                     </label>
+                  
                 </div>
           </div>
           </div>

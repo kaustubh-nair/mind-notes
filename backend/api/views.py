@@ -56,6 +56,17 @@ class BookApiView(APIView):
 
         return Response(status=status.HTTP_200_OK)
 
+    def patch(self, request, *args, **kwargs):
+        book_id = request.data.get('book_id')
+        book = Book.objects.get(id=book_id)
+        if (request.data.get('is_public')):
+            book.is_public = request.data.get('is_public')
+        if (request.data.get('description')):
+            book.description = request.data.get('description')
+        book.save()
+        return Response(status=status.HTTP_200_OK)
+
+
 class BooksApiView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
