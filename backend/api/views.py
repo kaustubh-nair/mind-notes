@@ -200,7 +200,7 @@ class LinesApiView(APIView):
         start_id = request.data.get('start_id')
         end_id = request.data.get('end_id')
         book_id = request.data.get('book_id')
-        colors = ['red', 'green', 'blue', 'pink', 'black', 'gray', 'grey', 'purple', 'orange', 'yellow', 'brown', 'cyan',]
+        colors = ['red', 'green', 'blue', 'pink', 'black', 'purple', 'orange', 'yellow', 'brown', 'cyan',]
         color = random.choice(colors)
         Line.objects.create(start_id=start_id, end_id=end_id, book_id=book_id, color=color)
         return Response({}, status=status.HTTP_200_OK)

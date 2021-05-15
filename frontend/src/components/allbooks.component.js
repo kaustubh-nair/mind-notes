@@ -12,6 +12,7 @@ let addBookForm = "";
 
 function AllBooks({getToken, setBookId}) {
   const [books, setBooks] = useState(null);
+  const [addBookForm, setaddBookForm] = useState("");
   const forceUpdate = useForceUpdate();
 
 
@@ -81,7 +82,6 @@ function AllBooks({getToken, setBookId}) {
 
   const saveBook = async (e) => {
     e.preventDefault();
-    console.log(e.target);
     const title = e.target[1].value;
     const description = e.target[2].value;
 
@@ -96,16 +96,15 @@ function AllBooks({getToken, setBookId}) {
         user_id: 1,
     }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false });
 
-    addBookForm = "";
+    setaddBookForm("");
     fetchBooks();
   }
 
   function closeForm() {
-    addBookForm = "";
-    forceUpdate();
+    setaddBookForm("");
   }
   function addBook() {
-    addBookForm = [
+    setaddBookForm([
           <div className="formbk" id="contact_form">
               <div className="panel-body">
                   <form onSubmit={saveBook} className="form-horizontal" role="form">
@@ -131,8 +130,7 @@ function AllBooks({getToken, setBookId}) {
                   </form>
               </div>
             </div>
-    ];
-    forceUpdate();
+    ]);
   }
   return (
     <>

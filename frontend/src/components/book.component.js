@@ -52,7 +52,8 @@ const Book = ({getToken}) => {
     const token = getToken();
     let name = e.target[1].value;
     let content = e.target[2].value;
-    let note_id = e.target[1].id;
+    let note_id = e.target[1].id.substring(4);
+
     const res = axios.patch(url, {
       book_id: bookId,
       note_id: note_id,
@@ -225,17 +226,15 @@ const Book = ({getToken}) => {
         setFormContent(notes[i].content);
       }
     }
-    console.log(formName);
-    console.log(formContent);
     setaddNoteForm( [
           <div className="formbk" id="contact_form">
               <div className="panel-body">
-                  <form id={noteId} onSubmit={saveNote} className="form-horizontal" role="form">
+                  <form onSubmit={saveNote} className="form-horizontal" role="form">
                       <button onClick={closeForm} className="btn btn-danger">X</button>
                       <div className="form-group">
                           <label for="title" className="">Title</label>
                           <div className="">
-                              <input className="form-control" defaultValue={formName} id={noteId} />
+                              <input className="form-control" defaultValue={formName} id={"NOTE"+noteId} />
                           </div>
                       </div>
                       <div className="form-group">
@@ -259,9 +258,9 @@ const Book = ({getToken}) => {
   return (
     <div className="canvas-wrapper">
       <React.Fragment>
+          {addNoteForm}
         <h3 className="note-heading">Book</h3>
         <div className="note-canvas">
-          {addNoteForm}
           <div className="row">
             <div className="column">
               <div className="canvasStyle" id="canvas" >
