@@ -26,6 +26,8 @@ const Book = ({getToken}) => {
   const forceUpdate = useForceUpdate();
 
   const [notes, setNotes] = useState([]);
+  const [formName, setFormName] = useState("");
+  const [formContent, setFormContent] = useState("");
   const [addNoteForm, setaddNoteForm] = useState("");
   const [connectionMode, setConnectionMode] = useState(null); // 0 for selecting start, 1 for selecting end, null for opening note.
   const [disConnectionMode, setDisconnectionMode] = useState(null); // 0 for selecting start, 1 for selecting end, null for opening note.
@@ -217,6 +219,14 @@ const Book = ({getToken}) => {
   }
 
   function addNotePopup(noteId) {
+    for (var i in notes) {
+      if (notes[i].id == noteId){
+        setFormName(notes[i].name);
+        setFormContent(notes[i].content);
+      }
+    }
+    console.log(formName);
+    console.log(formContent);
     setaddNoteForm( [
           <div className="formbk" id="contact_form">
               <div className="panel-body">
@@ -225,13 +235,13 @@ const Book = ({getToken}) => {
                       <div className="form-group">
                           <label for="title" className="">Title</label>
                           <div className="">
-                              <input className="form-control" id={noteId} placeholder="Title"/>
+                              <input className="form-control" defaultValue={formName} id={noteId} />
                           </div>
                       </div>
                       <div className="form-group">
                           <label for="content" className="">Content</label>
                           <div className="">
-                              <input className="form-control" id="content" placeholder="Content"/>
+                              <input className="form-control" id="content" defaultValue={formContent} />
                           </div>
                       </div>
 
