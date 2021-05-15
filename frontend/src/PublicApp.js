@@ -13,12 +13,8 @@ export default function PublicApp({setToken}) {
           <PublicNavbar/>
           <div className="outer">
               <Switch>
-                <Route exact path="/" >
-                  <Login setToken={setToken}/>
-                </Route>
-                <Route path="/sign-up" >
-                    <SignUp/>
-                </Route>
+                <Route exact path="/" render={(props) => <Login {...props} setToken={setToken} />} />
+                <Route path="/sign-up" render={(props) => <SignUp {...props} />} />
               </Switch>
           </div>
         </div></Router>

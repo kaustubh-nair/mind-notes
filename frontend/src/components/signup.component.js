@@ -1,19 +1,52 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Redirect, Link} from "react-router-dom";
+import {variables} from "../urls.js";
 
-export default function SignUp() {
+async function signupUser(credentials) {
+ return fetch(variables.serverUrl + variables.signinEndpoint, {
+   method: 'POST',
+   headers: {
+     'Content-Type': 'application/json'
+   },
+   body: JSON.stringify(credentials)
+ })
+   .then(data => data.json())
+}
+
+export default function SignUp(props) {
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const username = e.target[0].value;
+        const email = e.target[1].value;
+        const password = e.target[2].value;
+        const password2 = password;
+        const first_name = 'User';
+
+        const response = await signupUser({
+          username,
+          password,
+          password2,
+          first_name,
+          email,
+        });
+        if (email == response.email) {
+          props.history.push({
+           pathname: '/',
+           state: { message: 'Signup successful!'}
+         });
+        }
+      }
+
         return (
             <div className="inner">
-            <form>
+            <form onSubmit={handleSubmit}>
                 <h3>Register</h3>
 
                 <div className="form-group">
-                    <label>First name</label>
-                    <input type="text" className="form-control" placeholder="First name" />
-                </div>
-
-                <div className="form-group">
-                    <label>Last name</label>
-                    <input type="text" className="form-control" placeholder="Last name" />
+                    <label>Username</label>
+                    <input type="text" className="form-control" placeholder="Username" />
                 </div>
 
                 <div className="form-group">

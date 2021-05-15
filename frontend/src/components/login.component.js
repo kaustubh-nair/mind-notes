@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Redirect} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Redirect, useLocation } from "react-router-dom";
 import {variables} from "../urls.js";
 
 async function loginUser(credentials) {
@@ -15,9 +15,25 @@ async function loginUser(credentials) {
 
 
 
-export default function Login({setToken}) {
+export default function Login(props) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
+    const [message, setMessage] = useState("");
+    const location = useLocation();
+
+    const setMessages = () => {
+      if ('state' in location) {
+        if (location.state)
+          setMessage(
+                  <div className="alert alert-success">
+            {location.state.message}
+                  </div>
+          );
+      }
+      else {
+        setMessage("");
+      }
+    }
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -27,15 +43,25 @@ export default function Login({setToken}) {
         });
         if ('access' in response)
         {
-            setToken({'access': response['access'], 'refresh': response['refresh']});
-            window.location.reload(false);
+            props.setToken({'access': response['access'], 'refresh': response['refresh']});
+            props.history.push({
+             pathname: '/home',
+           });
+          //reload page
+           props.history.go(0)
         }
       }
+
+      useEffect(() => {
+        setMessages();
+      }, []);
+
         return (
             <div className="inner">
             <form onSubmit={handleSubmit}>
 
                 <h3>Log in</h3>
+                  {message}
 
                 <div className="form-group">
                     <label>Username</label>

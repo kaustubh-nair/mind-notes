@@ -10,7 +10,7 @@ function useForceUpdate(){
 let renderedBooks = "";
 let addBookForm = "";
 
-function AllBooks({getToken, setBookId}) {
+function AllBooks(props) {
   const [books, setBooks] = useState(null);
   const [addBookForm, setaddBookForm] = useState("");
   const forceUpdate = useForceUpdate();
@@ -18,7 +18,7 @@ function AllBooks({getToken, setBookId}) {
 
   const fetchBooks = async () => {
     const url = variables.serverUrl + variables.fetchBooksEndpoint;
-    const token = getToken();
+    const token = props.getToken();
     const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {user_id: '1'}});
     setBooks(response.data);
   }
@@ -45,6 +45,15 @@ function AllBooks({getToken, setBookId}) {
   }
 
 
+  function redirect (e) {
+    console.log(e.target.id);
+    props.history.push({
+     pathname: '/book/' + e.target.id + '/notes',
+   });
+   props.history.go(0)
+
+  }
+
   function setRenderedBooks() {
     // TODO renderedBOOks save to state
     console.debug(books);
@@ -55,7 +64,7 @@ function AllBooks({getToken, setBookId}) {
           <div className="book-card row">
             <div className="column">
                 <div>
-                    <Link className="title" to={"/book/" + books[i].id + "/notes"} >
+                    <Link className="title" onClick={redirect} id={books[i].id}>
                       <h4 id={books[i].id}>
                           {books[i].title}
                   
@@ -74,6 +83,7 @@ function AllBooks({getToken, setBookId}) {
             </div>
           </div>);
       }
+      renderedBooks =renderedBooks.reverse();
       forceUpdate();
     }
     else {
@@ -85,15 +95,16 @@ function AllBooks({getToken, setBookId}) {
     e.preventDefault();
     const title = e.target[1].value;
     const description = e.target[2].value;
+    const tags = e.target[3].value;
 
     const url = variables.serverUrl + variables.postBookEndpoint;
-    const token = getToken();
+    const token = props.getToken();
     // TODO: add wait
     const res = axios.post(url, {
         title: title,
         description: description,
         is_public: false,
-        tags: 'tech, gaming',
+        tags: tags,
         user_id: 1,
     }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false });
 
@@ -111,15 +122,21 @@ function AllBooks({getToken, setBookId}) {
                   <form onSubmit={saveBook} className="form-horizontal" role="form">
                       <button onClick={closeForm} className="btn btn-danger">X</button>
                       <div className="form-group">
-                          <label for="title" className="">Title</label>
+                          <label for="title" className="text">Title</label>
                           <div className="">
                               <input className="form-control" id="title" placeholder="Title"/>
                           </div>
                       </div>
                       <div className="form-group">
-                          <label for="description" className="">Description</label>
+                          <label for="description" className="text">Description</label>
                           <div className="">
-                              <input className="form-control" id="description" placeholder="Description"/>
+                              <input className="form-control desc" id="description" placeholder="Description"/>
+                          </div>
+                      </div>
+                      <div className="form-group">
+                          <label for="tags" className="text">Tags</label>
+                          <div className="">
+                              <input className="form-control desc" id="tags" placeholder="Tags"/>
                           </div>
                       </div>
 
@@ -136,17 +153,16 @@ function AllBooks({getToken, setBookId}) {
   return (
     <>
       <Router>
-      
-      <div className="allbooks-wrapper">
-        <h3 className="header">My Books</h3>
-          <button onClick={addBook} className="btn btn-dark" >Create book</button>
-
+            <h3 className="booksheader">My Books</h3>
           {addBookForm}
+            <div className="allbooks">
+              <button onClick={addBook} className="btn btn-dark" >Create book</button>
+
 
           <div className="books">
             {renderedBooks}
           </div>
-      </div>
+        </div>
       
       </Router>
     </>

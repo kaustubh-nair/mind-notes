@@ -9,9 +9,11 @@ function useForceUpdate(){
 }
 
 let renderedFeed = "";
+let tag_filter = "";
 
-function Feed({getToken, setBookId}) {
+function Feed(props) {
   const [feed, setFeed] = useState(null);
+  const [tags, setTags] = useState(null);
   const forceUpdate = useForceUpdate();
 
   const addNewComment = async (e, data) => {
@@ -20,7 +22,7 @@ function Feed({getToken, setBookId}) {
     const bookId = e.target.id
 
     const url = variables.serverUrl + variables.postCommentEndpoint;
-    const token = getToken();
+    const token = props.getToken();
     const res = axios.post(url, {
         content: commentContent,
         book_id: bookId,
@@ -31,9 +33,17 @@ function Feed({getToken, setBookId}) {
     fetchFeed();
   }
 
+  const likeBook = async () => {
+  }
+  const fetchTags = async () => {
+    const url = variables.serverUrl + variables.fetchTagsEndpoint;
+    const token = props.getToken();
+    const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {user_id: '1'}});
+    setTags(response.data);
+  }
   const fetchFeed = async () => {
     const url = variables.serverUrl + variables.fetchFeedEndpoint;
-    const token = getToken();
+    const token = props.getToken();
     const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {user_id: '1'}});
     setFeed(response.data);
   }
@@ -41,6 +51,7 @@ function Feed({getToken, setBookId}) {
 
   useEffect(() => {
     fetchFeed();
+    fetchTags();
 	}, []);
 
   useEffect(() => {
@@ -59,18 +70,30 @@ function Feed({getToken, setBookId}) {
     return t;
   }
 
+  function bookmatchesTag(book) {
+    console.log(tag_filter);
+    if (tag_filter == "")
+      return true;
+    for(var i in book.tags)
+    {
+      console.log(book.tags[i].name);
+      if (tag_filter == book.tags[i].name)
+        return true;
+    }
+    return false;
+  }
   function renderFeed() {
     if (feed) {
       renderedFeed = [];
       for(var i = 0; i < feed.length; i++) {
-        console.log(feed[i]);
+        if (bookmatchesTag(feed[i])) {
         renderedFeed.push(
           <div className="feed-card ">
           <div className="book row">
             <div className="header">
              <img className="profile-picture" src={require('../static/pf.png')} alt="profile picture"/> 
               <div className="username">
-                {feed[i].user.first_name}
+                {feed[i].user.username}
               </div>
               <div className="timestamp">
                 {feed[i].time_ago}
@@ -103,7 +126,7 @@ function Feed({getToken, setBookId}) {
                     <div className="comment">
                     <div className="header">
                          <img className="profile-picture" src={require('../static/pf.png')} alt="profile picture"/> 
-                        <div className="username">{comment.user.first_name}</div>
+                        <div className="username">{comment.user.username}</div>
                         <div className="timestamp">{comment.time_ago}</div>
                     </div>
                       <div className="">{comment.content}</div>
@@ -111,17 +134,22 @@ function Feed({getToken, setBookId}) {
                   )
                 )}
           </div>
-          <div className="like">
-                <button onClick={likeBook} className="btn btn-dark">Like</button>
+          <div className="container">
+          <div className="row">
+              <div className="column-sm new-comment">
+                <form onSubmit={addNewComment} id={feed[i].id}>
+                  <input placeholder="Add new comment" />
+                </form>
+              </div>
+          
           </div>
-          <div className="new-comment">
-            <form onSubmit={addNewComment} id={feed[i].id}>
-              <input placeholder="Add new comment" />
-            </form>
+          
           </div>
           </div>
         );
+        }
       }
+      renderedFeed = renderedFeed.reverse();
       forceUpdate();
     }
     else {
@@ -129,9 +157,36 @@ function Feed({getToken, setBookId}) {
     }
 
   }
+  const sortByTag = (e) => {
+    const tag = e.target.value;
+    if (tag == "Sort by tag"){
+      tag_filter = ""
+    }
+    else {
+      tag_filter = tag;
+    }
+    renderFeed();
+
+  }
+  function getTags() {
+    var tagnames = []
+    for (var i in tags) {
+      tagnames.push(
+        <option value={tags[i].name}>
+        {tags[i].name}
+        </option>
+      );
+    }
+    return tagnames
+  }
   return (
     <>
           <div className="feed">
+      <select className="form-select" onChange={sortByTag} name="pets" id="pet-select">
+        <option value="">Sort by tag</option>
+          {getTags()}
+        </select>
+
             {renderedFeed}
           </div>
     </>

@@ -12,7 +12,7 @@ from . import models
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
-        fields = ('username', 'first_name')
+        fields = '__all__'
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,6 +42,8 @@ class CommentSerializer(serializers.ModelSerializer):
             time_ago += str(minutes) + ' minutes '
 
         time_ago += 'ago'
+        if time_ago =='ago':
+            time_ago = 'now'
 
         return time_ago
 
@@ -70,6 +72,8 @@ class BookSerializer(serializers.ModelSerializer):
             time_ago += str(minutes) + ' minutes '
 
         time_ago += 'ago'
+        if time_ago =='ago':
+            time_ago = 'now'
 
         return time_ago
 

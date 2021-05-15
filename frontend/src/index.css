@@ -145,6 +145,8 @@ input:checked + .slider:before {
 
 .books {
   padding-left: 30%;
+  position: absolute;
+  top: 100px;
 }
 
 .book-card .title {
@@ -174,7 +176,6 @@ input:checked + .slider:before {
 .note-canvas .column {
   flex: 80%;
   position: relative;
-  border: black solid 1px;
 }
 .note-canvas .column-right {
   flex: 20%;
@@ -193,7 +194,7 @@ input:checked + .slider:before {
 
 .book-card {
   /* Add shadows to create the "card" effect */
-  width: 50%;
+  width: 500px;
   padding: 10px 16px;
   margin: 1%;
   border-radius: 2vh;
@@ -242,6 +243,8 @@ input:checked + .slider:before {
 
 .feed {
   padding-left: 30%;
+  position: absolute;
+  top: 70px;
 }
 
 .feed-card .title {
@@ -326,27 +329,51 @@ input:checked + .slider:before {
   background-color: #ebebeb;
 }
 
-.allbooks-wrapper .header {
-  margin-top: -10%;
-  padding-left: 10%;
+
+.booksheader {
+  padding-left: 40px;
+  padding-right: 1000px;
+  position: absolute;
+  top: 70px;
 }
 
-.allbooks-wrapper .btn {
+.allbooks .btn-dark {
   margin-left: 80%;
+  position: absolute;
+  top: 80px;
 
 }
 
 .formbk {
   margin: 0 auto;
+  width: 50%;
   left: 50%;
   transform: translate(-50%, 0);
   position: fixed;
-  background: #333;
+  background: #ebebeb;
   color:#000;
   z-index:9999;
   display:block;
 }
 
+.formbk .form-control {
+  margin-left: 2%;
+  margin-right: 2%;
+  width: 94%;
+}
+
+.formbk .btn-dark {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+.formbk .btn-danger {
+  margin-right: 0;
+  margin-left: 93%;
+  margin-top: 1%;
+}
+.formbk .text {
+  margin-left: 10px;
+}
 .panel {
   margin-left: auto;
   margin-right: auto;
@@ -357,6 +384,7 @@ input:checked + .slider:before {
 
 .sidebar {
   padding: 1%;
+  background-color: #e0e0e0;
 }
 
 .sidebar .btn {
@@ -365,4 +393,8 @@ input:checked + .slider:before {
 
 .sidebar .desc {
   padding-top: 5%;
+}
+.formbk .form-horizontal {
+  padding-left: 3%;
+  padding-bottom: 3%;
 }

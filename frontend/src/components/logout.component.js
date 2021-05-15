@@ -13,8 +13,12 @@ function logoutUser(token) {
      })
 }
 
-export default function Logout({getToken, setToken}) {
-  const res = logoutUser(getToken())
-  setToken(null);
-  return <Redirect to={{pathname: "/",}} />
+export default function Logout(props) {
+  const res = logoutUser(props.getToken())
+  props.setToken(null);
+  props.history.push({
+   pathname: '/',
+ });
+//reload page
+ props.history.go(0)
 }

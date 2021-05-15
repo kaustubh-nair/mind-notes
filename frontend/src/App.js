@@ -45,18 +45,10 @@ export default function App() {
                 <Navbar/>
                 <div className="outer">
                     <Switch>
-                          <Route exact path='/' >
-                            <AllBooks getToken={getToken} setBookId={setBookId}/>
-                          </Route>
-                          <Route path='/feed' >
-                            <Feed getToken={getToken} setToken={setToken}/>
-                          </Route>
-                          <Route path='/logout' >
-                            <Logout getToken={getToken} setToken={setToken}/>
-                          </Route>
-                          <Route exact path='/book/:id/notes'>
-                            <Book getToken={getToken}/>
-                          </Route>
+                          <Route path="/home" render={(props) => <AllBooks {...props} getToken={getToken} />} />
+                          <Route path="/feed" render={(props) => <Feed {...props} getToken={getToken} />} />
+                          <Route path="/logout" render={(props) => <Logout {...props} getToken={getToken} setToken={setToken} />} />
+                          <Route exact path='/book/:id/notes' render={(props) => <Book {...props} getToken={getToken}/>} />
                     </Switch>
                 </div>
           </div>

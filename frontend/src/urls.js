@@ -1,6 +1,7 @@
 const variables = {
     serverUrl: "http://localhost:8000/",
     fetchNotesEndpoint: "api/books/notes",
+    fetchTagsEndpoint: "api/tags",
     postNoteEndpoint: "api/books/notes",
     postBookEndpoint: "api/book/",
     patchBookEndpoint: "api/book/",
@@ -13,6 +14,7 @@ const variables = {
     postCommentEndpoint: "api/books/comment",
     fetchBookEndpoint: "api/book/",
     loginEndpoint: "api/login/",
+    signinEndpoint: "api/register/",
     logoutEndpoint: "api/logout/",
 }
 

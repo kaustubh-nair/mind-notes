@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status, generics
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import BookSerializer, UserSerializer, NoteSerializer, LineSerializer, RegisterSerializer
+from .serializers import BookSerializer, UserSerializer, NoteSerializer, LineSerializer,TagSerializer, RegisterSerializer
 from .models import Book, User, Note, Line, Comment, Tag
 
 class LogoutView(APIView):
@@ -41,7 +41,7 @@ class BookApiView(APIView):
         title = request.data.get('title')
         description = request.data.get('description')
         is_public = request.data.get('is_public')
-        user_id = request.data.get('user_id')
+        user_id = request.user.id
         tags = request.data.get('tags').split(',')
 
         book = Book.objects.create(title=title, description=description,
@@ -70,7 +70,7 @@ class BookApiView(APIView):
 class BooksApiView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
-        user_id = int(dict(request.GET)['user_id'][0])
+        user_id = request.user.id
         books = Book.objects.filter(user_id=user_id)
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -109,10 +109,11 @@ class BookNoteApiView(APIView):
             note.name = request.data.get('name')
         if (request.data.get('content')):
             note.content = request.data.get('content')
-        if (request.data.get('x')):
-            note.x = request.data.get('x')
-        if (request.data.get('y')):
-            note.y = request.data.get('y')
+        if (request.data.get('coords_update')):
+            if (request.data.get('x')):
+                note.x = request.data.get('x')
+            if (request.data.get('y')):
+                note.y = request.data.get('y')
 
         note.save()
         return Response({}, status=status.HTTP_200_OK)
@@ -132,7 +133,6 @@ class BookNoteApiView(APIView):
 class FeedApiView(APIView):
     permission_classes= (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
-        # user_id = int(dict(request.GET)['user_id'][0])
         books = Book.objects.filter(is_public=True)
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -140,13 +140,13 @@ class FeedApiView(APIView):
 class PublicBookApiView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
-        user_id = int(dict(request.GET)['user_id'][0])
+        user_id = request.user.id
         books = Book.objects.filter(user_id=user_id, is_public=True)
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, *args, **kwargs):
-        user_id = int(dict(request.GET)['user_id'][0])
+        user_id = request.user.id
         books = Book.objects.filter(user_id=user_id, is_public=True)
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -164,7 +164,7 @@ class NoteApiView(APIView):
 class PrivateBookApiView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
-        user_id = int(dict(request.GET)['user_id'][0])
+        user_id = request.user.id
         books = Book.objects.filter(user_id=user_id, is_public=False)
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -192,7 +192,6 @@ class LinesApiView(APIView):
         end_id = request.data.get('end_id')
         book_id = request.data.get('book_id')
         l = Line.objects.get(start_id=start_id, end_id=end_id, book_id=book_id)
-        print("YAY\n\n\n\n\n")
         l.delete()
         return Response({}, status=status.HTTP_200_OK)
 
@@ -209,9 +208,24 @@ class CommentApiView(APIView):
     permission_classes = (IsAuthenticated,)
     def post(self, request, *args, **kwargs):
         book_id = request.data.get('book_id')
-        user_id = request.data.get('user_id')
+        user_id = request.user.id
         content = request.data.get('content')
 
         Comment.objects.create(content=content, book_id=book_id, user_id=user_id)
 
         return Response({}, status=status.HTTP_200_OK)
+
+class TagApiView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        tags = Tag.objects.all()
+        print(tags, "\n\n\n\n\n")
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserApiView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

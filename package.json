@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-toastr": "^3.0.0",
+    "toastr": "^2.1.4"
+  }
+}

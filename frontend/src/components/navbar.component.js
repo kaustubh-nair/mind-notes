@@ -6,14 +6,14 @@ export default function Navbar({setToken}) {
     return (
           <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div className="container">
-              <Link className="navbar-brand" to={"/"}>Mind Note</Link>
+              <Link className="navbar-brand" to={"/home"}>Mind Note</Link>
               <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul className="navbar-nav mr-auto">
                   <li className="nav-item">
                     <Link className="nav-link" to={"/feed"}>Feed</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to={"/"}>My Books</Link>
+                    <Link className="nav-link" to={"/home"}>My Books</Link>
                   </li>
                 </ul>
                 <ul className="navbar-nav ml-auto">

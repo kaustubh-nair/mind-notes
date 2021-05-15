@@ -21,7 +21,7 @@ const noteStyle = {
   height: "30px",
 }
 
-const Book = ({getToken}) => {
+const Book = (props) => {
   const [lastPoint, setLastPoint] = useState({ x: 0, y: 0 });
   const bookId = useParams().id;
   const forceUpdate = useForceUpdate();
@@ -40,33 +40,44 @@ const Book = ({getToken}) => {
 
   const togglePublic = async (e) => {
     const url = variables.serverUrl + variables.patchBookEndpoint;
-    const token = getToken();
+    const token = props.getToken();
     const res = await axios.patch(url, {
         book_id: bookId,
         is_public: !book.is_public,
     }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
   }
 
-  const saveNote = (e) => {
-    closeForm();
+  const saveNote = async (e) => {
     const url = variables.serverUrl + variables.postNoteEndpoint;
-    const token = getToken();
+    const token = props.getToken();
     let name = e.target[1].value;
     let content = e.target[2].value;
     let note_id = e.target[1].id.substring(4);
+    closeForm();
 
-    const res = axios.patch(url, {
+    const res = await axios.patch(url, {
       book_id: bookId,
       note_id: note_id,
       name: name,
       content: content,
+      coords_update: false,
       parent_id: 1,
     }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
+    var n = notes;
+    for(var i in n) {
+      if (n[i].id == note_id)
+      {
+        n[i].name = name;
+        n[i].content = content;
+
+      }
+    }
+    forceUpdate();
   }
 
   const createArrow = async (startingNote, endingNote) => {
         const url = variables.serverUrl + variables.postLinesEndpoint;
-        const token = getToken();
+        const token = props.getToken();
         const res = await axios.post(url, {
             book_id: bookId,
             start_id: startingNote,
@@ -77,7 +88,7 @@ const Book = ({getToken}) => {
 
   const deleteArrow = async (startingNote, endingNote) => {
         const url = variables.serverUrl + variables.deleteLinesEndpoint;
-        const token = getToken();
+        const token = props.getToken();
         const res = await axios.patch(url, {
             book_id: bookId,
             start_id: startingNote,
@@ -133,7 +144,6 @@ const Book = ({getToken}) => {
         else {
             clickOnNote(e, noteId);
         }
-        //forceUpdate();
     }
 
     const onStart = (e) => {
@@ -147,7 +157,7 @@ const Book = ({getToken}) => {
 
     const fetchLines = async () => {
         const url = variables.serverUrl + variables.fetchLinesEndpoint;
-        const token = getToken();
+        const token = props.getToken();
         const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         var l = Object.values(response.data)
         for (var i = 0; i < l.length; i++) {
@@ -159,24 +169,24 @@ const Book = ({getToken}) => {
 
     const fetchBook = async () => {
         const url = variables.serverUrl + variables.fetchBookEndpoint;
-        const token = getToken();
+        const token = props.getToken();
         const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         setBook(response.data);
     }
 
     const fetchNotes = async () => {
         const url = variables.serverUrl + variables.fetchNotesEndpoint;
-        const token = getToken();
+        const token = props.getToken();
         const response = await axios.get(url, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
         setNotes(Object.values(response.data));
     }
 
     const addNote = async () => {
         const url = variables.serverUrl + variables.postNoteEndpoint;
-        const token = getToken();
+        const token = props.getToken();
         const res = await axios.post(url, {
             book_id: bookId,
-            name: 'lksdjf',
+            name: '',
             content: '',
             x: 50,
             y: 50,
@@ -187,16 +197,51 @@ const Book = ({getToken}) => {
 
     const updatePosition = (x, y, noteId) => {
         const url = variables.serverUrl + variables.patchNoteEndpoint;
-        const token = getToken();
+        const token = props.getToken();
         const res = axios.patch(url, {
             book_id: bookId,
             note_id: noteId,
+          coords_update: true,
             x: x,
             y: y,
         }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false, params: {book_id: bookId}});
     }
 
+  const editDesc = async (e) => {
+    e.preventDefault();
+    const url = variables.serverUrl + variables.patchBookEndpoint;
+    const token = props.getToken();
+    closeForm();
+    const description = e.target[1].value;
+    const res = await axios.patch(url, {
+        book_id: bookId,
+        description: description,
+    }, { headers: { Authorization: 'Bearer ' + token.access }, crossDomain: false});
+    fetchBook();
+  }
+
   function openEditDescription() {
+    setaddNoteForm( [
+          <div className="formbk" id="contact_form">
+              <div className="panel-body">
+                  <form onSubmit={editDesc} className="form-horizontal" role="form">
+                      <button onClick={closeForm} className="btn btn-danger">X</button>
+                      <div className="form-group">
+                          <label for="content" className="">Description</label>
+                          <div className="">
+                              <textarea rows="10" className="form-control" id="description" defaultValue={book.description} />
+                          </div>
+                      </div>
+
+                      <div className="form-group">
+                          <div className="">
+                              <button type="submit" className="btn btn-dark">Save</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+    ]);
 
   }
 
@@ -219,43 +264,56 @@ const Book = ({getToken}) => {
     setaddNoteForm("");
   }
 
+  function editNote(e) {
+    let noteId = e.target.id.substring(4);
+    closeForm();
+    addEditNotePopup(noteId);
+  }
+
   function addNotePopup(noteId) {
+    let name = "";
+    let content = "";
     for (var i in notes) {
       if (notes[i].id == noteId){
         setFormName(notes[i].name);
         setFormContent(notes[i].content);
+        name = notes[i].name;
+        content = notes[i].content;
       }
     }
     setaddNoteForm( [
           <div className="formbk" id="contact_form">
               <div className="panel-body">
-                  <form onSubmit={saveNote} className="form-horizontal" role="form">
+                  <form className="form-horizontal" role="form">
                       <button onClick={closeForm} className="btn btn-danger">X</button>
                       <div className="form-group">
                           <label for="title" className="">Title</label>
                           <div className="">
-                          <ReactMarkdown>{formName}</ReactMarkdown>
+                          <ReactMarkdown>{name}</ReactMarkdown>
                           </div>
                       </div>
                       <div className="form-group">
                           <label for="content" className="">Content</label>
                           <div className="">
-                          <ReactMarkdown>{formContent}</ReactMarkdown>
+                            <ReactMarkdown>{content}</ReactMarkdown>
                           </div>
                       </div>
+                      <button id={"NOTE"+noteId} onClick={editNote} className="btn btn-dark">Edit</button>
 
-                      <div className="form-group">
-                      </div>
                   </form>
               </div>
             </div>
     ]);
   }
   function addEditNotePopup(noteId) {
+    let name = "";
+    let content = "";
     for (var i in notes) {
       if (notes[i].id == noteId){
         setFormName(notes[i].name);
         setFormContent(notes[i].content);
+        name = notes[i].name;
+        content = notes[i].content;
       }
     }
     setaddNoteForm( [
@@ -265,15 +323,14 @@ const Book = ({getToken}) => {
                       <button onClick={closeForm} className="btn btn-danger">X</button>
                       <div className="form-group">
                           <label for="title" className="">Title</label>
-                          <ReactMarkdown># Hello, *world*!</ReactMarkdown>
                           <div className="">
-                              <input className="form-control" defaultValue={formName} id={"NOTE"+noteId} />
+                              <input className="form-control" defaultValue={name} id={"NOTE"+noteId} />
                           </div>
                       </div>
                       <div className="form-group">
                           <label for="content" className="">Content</label>
                           <div className="">
-                              <input className="form-control" id="content" defaultValue={formContent} />
+                              <textarea rows="10" className="form-control" id="content" defaultValue={content} />
                           </div>
                       </div>
 
@@ -291,7 +348,7 @@ const Book = ({getToken}) => {
     <div className="canvas-wrapper">
       <React.Fragment>
           {addNoteForm}
-        <h3 className="note-heading">Book</h3>
+        <h3 className="note-heading">{book.title}</h3>
         <div className="note-canvas">
           <div className="row">
             <div className="column">
@@ -304,7 +361,7 @@ const Book = ({getToken}) => {
                           id={note.id}
                           style={{ ...noteStyle, left: note.x, top: note.y }}
                         >
-                          {note.title}
+                          {note.name}
                         </div>
                       </Draggable>
                     ))}

@@ -17,4 +17,6 @@ urlpatterns = [
         path('books/user/<str:user_name>', views.UserBookApiView.as_view()),
         path('note', views.NoteApiView.as_view()),
         path('feed', views.FeedApiView.as_view()),
+        path('tags', views.TagApiView.as_view()),
+        path('user', views.UserApiView.as_view()),
 ]
