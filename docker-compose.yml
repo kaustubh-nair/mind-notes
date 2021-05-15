@@ -9,10 +9,10 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
   web:
     image: kaustubhnair/mindnotesbackend
     build:
-      context: .
       dockerfile: ./backend/Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -22,12 +22,22 @@ services:
       - "8000:8000"
     depends_on:
       - db
+
   frontend:
     image: kaustubhnair/mindnotesfrontend
-    build: ./frontend
+    build: 
+      dockerfile: ./frontend/Dockerfile
     command: ["npm", "start"]
     volumes:
       - ./frontend:/app/frontend
       - ./frontend/node_modules:/app/frontend/node_modules
     ports:
       - "3000:3000"
+
+  nginx:
+    image: kaustubhnair/mindnotesnginx
+    restart: always
+    build:
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "80:80"
