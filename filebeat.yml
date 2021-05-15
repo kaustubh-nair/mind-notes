@@ -1,0 +1,8 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /home/kau/projects/acad/spe/mainproject/logs/req.log
+
+output.logstash:
+  hosts: ["13.92.189.178:5044"]
