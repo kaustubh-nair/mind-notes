@@ -46,6 +46,7 @@ function AllBooks({getToken, setBookId}) {
 
 
   function setRenderedBooks() {
+    // TODO renderedBOOks save to state
     console.debug(books);
     if (books) {
       renderedBooks = [];

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactMarkdown from 'react-markdown'
 import { useLocation, Redirect, BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Xarrow from "react-xarrows";
 import axios from 'axios';
@@ -216,7 +217,6 @@ const Book = ({getToken}) => {
 
   function closeForm() {
     setaddNoteForm("");
-    forceUpdate();
   }
 
   function addNotePopup(noteId) {
@@ -233,6 +233,39 @@ const Book = ({getToken}) => {
                       <button onClick={closeForm} className="btn btn-danger">X</button>
                       <div className="form-group">
                           <label for="title" className="">Title</label>
+                          <div className="">
+                          <ReactMarkdown>{formName}</ReactMarkdown>
+                          </div>
+                      </div>
+                      <div className="form-group">
+                          <label for="content" className="">Content</label>
+                          <div className="">
+                          <ReactMarkdown>{formContent}</ReactMarkdown>
+                          </div>
+                      </div>
+
+                      <div className="form-group">
+                      </div>
+                  </form>
+              </div>
+            </div>
+    ]);
+  }
+  function addEditNotePopup(noteId) {
+    for (var i in notes) {
+      if (notes[i].id == noteId){
+        setFormName(notes[i].name);
+        setFormContent(notes[i].content);
+      }
+    }
+    setaddNoteForm( [
+          <div className="formbk" id="contact_form">
+              <div className="panel-body">
+                  <form onSubmit={saveNote} className="form-horizontal" role="form">
+                      <button onClick={closeForm} className="btn btn-danger">X</button>
+                      <div className="form-group">
+                          <label for="title" className="">Title</label>
+                          <ReactMarkdown># Hello, *world*!</ReactMarkdown>
                           <div className="">
                               <input className="form-control" defaultValue={formName} id={"NOTE"+noteId} />
                           </div>
@@ -253,7 +286,6 @@ const Book = ({getToken}) => {
               </div>
             </div>
     ]);
-    forceUpdate();
   }
   return (
     <div className="canvas-wrapper">
