@@ -1,5 +1,7 @@
 # Hierarchical note taking app
 
+![](images/map.png)
+![](images/createnote.png)
 ## Features
 
 * Nested notes displayed like mindmaps

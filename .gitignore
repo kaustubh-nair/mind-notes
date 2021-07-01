@@ -5,6 +5,8 @@ __pycache__/
 # dependencies
 frontend/.pnp
 frontend/pnp.js
+frontend/node_modules
+
 
 # testing
 frontend/coverage
