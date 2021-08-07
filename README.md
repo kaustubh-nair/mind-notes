@@ -14,13 +14,23 @@
 
 ## Features
 
-* Nested notes displayed like mindmaps
+### Tech stack - Django, ReactJS, MySQL, Docker, Ansible, ELK, Github Actions.
+
+### Application
+
+* Nested notes displayed like mindmaps.
 * Each note can have multiple child notes connected to it.
 * Supports rich formatting features.
-* Notes can be moved around.
+* Notes can be dragged around.
 * Collection of notes can be saved as 'Books'.
 * Books can be public or private
 * Public books can be seen by anyone and be commented on.
+
+### Deployment
+
+* Containerization with docker for easy replication and deployment.
+* Github actionos auto-deploys to Microsoft Azure using Ansible.
+* ELK stack monitors logs for faults.
 
 # Notes
 
