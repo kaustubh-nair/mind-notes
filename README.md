@@ -14,7 +14,7 @@
 
 ## Features
 
-### Tech stack - Django, ReactJS, MySQL, Docker, Ansible, ELK, Github Actions.
+### Tech stack - Django, ReactJS, PostgreSQL, Docker, Ansible, ELK, Github Actions.
 
 ### Application
 
